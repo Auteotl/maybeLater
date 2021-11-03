@@ -15,15 +15,15 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<SplitPane dividerPositions="0.7286432160804021" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+<SplitPane dividerPositions="0.7286432160804021" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="637.0" prefWidth="926.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
    <items>
       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
          <children>
-            <SplitPane dividerPositions="0.25" prefHeight="400.0" prefWidth="598.0">
+            <SplitPane dividerPositions="0.2418655097613883" prefHeight="460.0" prefWidth="924.0">
                <items>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="458.0" prefWidth="168.0">
                      <children>
-                        <MenuBar layoutY="2.0" prefHeight="25.0" prefWidth="154.0">
+                        <MenuBar layoutY="2.0" prefHeight="25.0" prefWidth="220.0">
                            <menus>
                               <Menu mnemonicParsing="false" text="File">
                                  <items>
@@ -32,18 +32,15 @@
                               </Menu>
                               <Menu mnemonicParsing="false" text="Edit">
                                  <items>
-                                    <MenuItem mnemonicParsing="false" text="Delete" />
+                                    <MenuItem mnemonicParsing="false" text="Edit category" />
+                                    <MenuItem mnemonicParsing="false" text="Delete category" />
                                  </items>
                               </Menu>
-                              <Menu mnemonicParsing="false" text="Help">
-                                 <items>
-                                    <MenuItem mnemonicParsing="false" text="About" />
-                                 </items>
-                              </Menu>
+                              <Menu mnemonicParsing="false" text="Help" />
                            </menus>
                         </MenuBar>
-                        <ScrollBar layoutX="132.0" layoutY="27.0" orientation="VERTICAL" prefHeight="259.0" prefWidth="14.0" />
-                        <Accordion layoutY="27.0" prefHeight="70.0" prefWidth="132.0">
+                        <ScrollBar layoutX="206.0" layoutY="27.0" orientation="VERTICAL" prefHeight="431.0" prefWidth="14.0" />
+                        <Accordion layoutY="27.0" prefHeight="431.0" prefWidth="206.0">
                           <panes>
                             <TitledPane animated="false" text="untitled 1">
                               <content>
@@ -64,43 +61,52 @@
                         </Accordion>
                      </children>
                   </AnchorPane>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="458.0" prefWidth="758.0">
                      <children>
-                        <ScrollBar layoutX="430.0" orientation="VERTICAL" prefHeight="287.0" prefWidth="14.0" />
+                        <ScrollBar layoutX="682.0" orientation="VERTICAL" prefHeight="458.0" prefWidth="14.0" />
                         <Button layoutX="14.0" layoutY="20.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="38.0" text="❎" textOverrun="CENTER_ELLIPSIS">
                            <font>
-                              <Font size="16.0" />
+                              <Font size="14.0" />
                            </font></Button>
                         <Button layoutX="14.0" layoutY="90.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="38.0" text="❎" textOverrun="CENTER_ELLIPSIS">
                            <font>
-                              <Font size="16.0" />
+                              <Font size="14.0" />
                            </font>
                         </Button>
                         <Button layoutX="14.0" layoutY="160.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="38.0" text="❎" textOverrun="CENTER_ELLIPSIS">
                            <font>
-                              <Font size="16.0" />
+                              <Font size="14.0" />
                            </font>
                         </Button>
                         <Button layoutX="14.0" layoutY="230.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="38.0" text="❎" textOverrun="CENTER_ELLIPSIS">
                            <font>
-                              <Font size="16.0" />
+                              <Font size="14.0" />
                            </font>
                         </Button>
-                        <Hyperlink layoutX="99.0" layoutY="20.0" prefHeight="23.0" prefWidth="284.0" text="Hyperlink" />
-                        <TextField layoutX="99.0" layoutY="38.0" prefHeight="25.0" prefWidth="284.0" text="Описание" />
+                        <Hyperlink layoutX="99.0" layoutY="9.0" prefHeight="23.0" prefWidth="284.0" text="Hyperlink" />
+                        <TextField layoutX="99.0" layoutY="43.0" prefHeight="25.0" prefWidth="284.0" text="Описание" />
                      </children>
                   </AnchorPane>
                </items>
             </SplitPane>
          </children>
       </AnchorPane>
-      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="598.0">
+      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="924.0">
          <children>
-            <TextField layoutX="14.0" layoutY="16.0" prefHeight="25.0" prefWidth="169.0" />
-            <TextField layoutX="215.0" layoutY="16.0" prefHeight="25.0" prefWidth="169.0" />
+            <SplitPane dividerPositions="0.2418655097613883" layoutY="-7.0" prefHeight="179.0" prefWidth="924.0">
+              <items>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" />
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                     <children>
+                        <Button layoutX="531.0" layoutY="76.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="132.0" text="Сохранить" />
+                        <TextField layoutX="333.0" layoutY="52.0" prefHeight="25.0" prefWidth="169.0" />
+                        <TextField layoutX="98.0" layoutY="52.0" prefHeight="25.0" prefWidth="169.0" />
+                        <ChoiceBox layoutX="98.0" layoutY="101.0" prefHeight="25.0" prefWidth="402.0" />
+                     </children>
+                  </AnchorPane>
+              </items>
+            </SplitPane>
             <BottomNavigation layoutX="137.0" layoutY="79.0" />
-            <Button layoutX="452.0" layoutY="40.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="132.0" text="Button" />
-            <ChoiceBox layoutX="14.0" layoutY="67.0" prefHeight="25.0" prefWidth="370.0" />
          </children>
       </AnchorPane>
    </items>
