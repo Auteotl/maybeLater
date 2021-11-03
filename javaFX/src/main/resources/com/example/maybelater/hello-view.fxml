@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<SplitPane dividerPositions="0.7286432160804021" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="637.0" prefWidth="926.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+<SplitPane dividerPositions="0.7286432160804021" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="637.0" prefWidth="926.0" style="-fx-background-color: grey;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
    <items>
       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
          <children>
@@ -61,7 +61,7 @@
                         </Accordion>
                      </children>
                   </AnchorPane>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="458.0" prefWidth="758.0">
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="458.0" prefWidth="758.0" style="-fx-background-color: white;">
                      <children>
                         <ScrollBar layoutX="682.0" orientation="VERTICAL" prefHeight="458.0" prefWidth="14.0" />
                         <Button layoutX="14.0" layoutY="20.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="38.0" text="❎" textOverrun="CENTER_ELLIPSIS">
@@ -85,6 +85,16 @@
                         </Button>
                         <Hyperlink layoutX="99.0" layoutY="9.0" prefHeight="23.0" prefWidth="284.0" text="Hyperlink" />
                         <TextField layoutX="99.0" layoutY="43.0" prefHeight="25.0" prefWidth="284.0" text="Описание" />
+                        <Button layoutX="14.0" layoutY="300.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="38.0" text="❎" textOverrun="CENTER_ELLIPSIS">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Button>
+                        <Button layoutX="14.0" layoutY="370.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="38.0" text="❎" textOverrun="CENTER_ELLIPSIS">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Button>
                      </children>
                   </AnchorPane>
                </items>
