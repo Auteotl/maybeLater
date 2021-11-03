@@ -14,7 +14,6 @@
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
 
 <SplitPane dividerPositions="0.7286432160804021" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="637.0" prefWidth="926.0" style="-fx-background-color: grey;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
    <items>
@@ -41,7 +40,7 @@
                            </menus>
                         </MenuBar>
                         <ScrollBar layoutX="206.0" layoutY="27.0" orientation="VERTICAL" prefHeight="431.0" prefWidth="14.0" />
-                        <Accordion layoutY="27.0" prefHeight="431.0" prefWidth="206.0" style="-fx-background-color: #F5F5DC;">
+                        <Accordion layoutY="27.0" prefHeight="431.0" prefWidth="206.0">
                           <panes>
                             <TitledPane animated="false" text="untitled 1">
                               <content>
@@ -62,7 +61,7 @@
                         </Accordion>
                      </children>
                   </AnchorPane>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="458.0" prefWidth="758.0" style="-fx-background-color: #FFFFF0;">
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="458.0" prefWidth="758.0" style="-fx-background-color: white;">
                      <children>
                         <ScrollBar layoutX="682.0" orientation="VERTICAL" prefHeight="458.0" prefWidth="14.0" />
                         <Button layoutX="14.0" layoutY="20.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="38.0" text="❎" textOverrun="CENTER_ELLIPSIS">
@@ -84,8 +83,8 @@
                               <Font size="14.0" />
                            </font>
                         </Button>
-                        <Hyperlink alignment="CENTER" contentDisplay="CENTER" layoutX="99.0" layoutY="9.0" prefHeight="23.0" prefWidth="509.0" style="-fx-background-color: #DCDCDC;" text="URL" />
-                        <TextField alignment="CENTER" layoutX="99.0" layoutY="43.0" prefHeight="25.0" prefWidth="509.0" text="Описание" />
+                        <Hyperlink layoutX="99.0" layoutY="9.0" prefHeight="23.0" prefWidth="284.0" text="Hyperlink" />
+                        <TextField layoutX="99.0" layoutY="43.0" prefHeight="25.0" prefWidth="284.0" text="Описание" />
                         <Button layoutX="14.0" layoutY="300.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="38.0" text="❎" textOverrun="CENTER_ELLIPSIS">
                            <font>
                               <Font size="14.0" />
@@ -107,30 +106,12 @@
             <SplitPane dividerPositions="0.2418655097613883" layoutY="-7.0" prefHeight="179.0" prefWidth="924.0">
               <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" />
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" style="-fx-background-color: #F5F5DC;">
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                      <children>
-                        <Button layoutX="531.0" layoutY="76.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="132.0" text="Добавить">
-                           <font>
-                              <Font name="System Bold" size="12.0" />
-                           </font></Button>
+                        <Button layoutX="531.0" layoutY="76.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="132.0" text="Сохранить" />
                         <TextField layoutX="333.0" layoutY="52.0" prefHeight="25.0" prefWidth="169.0" />
                         <TextField layoutX="98.0" layoutY="52.0" prefHeight="25.0" prefWidth="169.0" />
-                        <ChoiceBox layoutX="98.0" layoutY="120.0" prefHeight="25.0" prefWidth="402.0" />
-                        <Text layoutX="164.0" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" text="URL">
-                           <font>
-                              <Font name="Arial" size="18.0" />
-                           </font>
-                        </Text>
-                        <Text layoutX="376.0" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Описание">
-                           <font>
-                              <Font name="Arial" size="18.0" />
-                           </font>
-                        </Text>
-                        <Text layoutX="258.0" layoutY="107.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Категория">
-                           <font>
-                              <Font name="Arial" size="18.0" />
-                           </font>
-                        </Text>
+                        <ChoiceBox layoutX="98.0" layoutY="101.0" prefHeight="25.0" prefWidth="402.0" />
                      </children>
                   </AnchorPane>
               </items>
