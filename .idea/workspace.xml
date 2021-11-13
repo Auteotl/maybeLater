@@ -5,20 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="145b301f-ddfe-41c1-86ff-dd68bfade3a2" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/MyProject.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/javaFX/.idea/libraries/Maven__org_checkerframework_checker_qual_3_5_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/javaFX/.idea/libraries/Maven__org_postgresql_postgresql_42_3_1.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/javaFX/src/main/resources/com/example/maybelater/HelloController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/d2210dfa-bd5a-46ff-b0fc-ed53e3f2ff1f.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/d2210dfa-bd5a-46ff-b0fc-ed53e3f2ff1f.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Var0.drawio" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/javaFX/MaybeLater.iml" beforeDir="false" afterPath="$PROJECT_DIR$/javaFX/MaybeLater.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javaFX/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/javaFX/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javaFX/src/main/java/com/example/maybelater/HelloController.java" beforeDir="false" afterPath="$PROJECT_DIR$/javaFX/src/main/java/com/example/maybelater/HelloController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/javaFX/src/main/java/com/example/maybelater/HelloApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/javaFX/src/main/resources/com/example/maybelater/HelloApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/javaFX/src/main/java/com/example/maybelater/HelloController.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/javaFX/src/main/resources/com/example/maybelater/hello-view.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/javaFX/src/main/resources/com/example/maybelater/hello-view.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javaFX/target/classes/com/example/maybelater/hello-view.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/javaFX/target/classes/com/example/maybelater/hello-view.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,7 +31,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../#JavaR/javafx-sdk-17.0.1/lib" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../maybeLater" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -47,6 +39,11 @@
     <property name="project.structure.last.edited" value="SDKs" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\OldDisc202103\Auteotl\Documents\#Git\MyProject\javaFX\src\main\resources\com\example\maybelater" />
+    </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -58,6 +55,9 @@
       <updated>1635891004155</updated>
       <workItem from="1636537411376" duration="4811000" />
       <workItem from="1636559563901" duration="30000" />
+      <workItem from="1636748567661" duration="1342000" />
+      <workItem from="1636751273570" duration="3057000" />
+      <workItem from="1636780074764" duration="428000" />
     </task>
     <servers />
   </component>
