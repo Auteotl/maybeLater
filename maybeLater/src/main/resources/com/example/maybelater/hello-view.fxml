@@ -17,7 +17,7 @@
 
 <SplitPane dividerPositions="0.5" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="636.0" prefWidth="926.0" style="-fx-background-color: grey;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.maybelater.HelloController">
    <items>
-      <MenuBar prefHeight="25.0" prefWidth="1148.0">
+      <MenuBar fx:id="menuBar" prefHeight="25.0" prefWidth="1148.0">
          <menus>
             <Menu mnemonicParsing="false" text="File">
                <items>
@@ -75,9 +75,9 @@
                               <Font size="14.0" />
                            </font>
                         </Button>
-                        <DialogPane fx:id="dialogPaneEdit" layoutX="66.0" layoutY="241.0" prefHeight="76.0" prefWidth="405.0" />
-                        <TextField fx:id="textEditCat" layoutX="100.0" layoutY="267.0" prefHeight="23.0" prefWidth="252.0" />
-                        <Button fx:id="buttonEditCat" layoutX="383.0" layoutY="268.0" mnemonicParsing="false" text="Button" />
+                        <DialogPane fx:id="dialogPaneEditCat" disable="true" layoutX="66.0" layoutY="241.0" prefHeight="76.0" prefWidth="405.0" visible="false" />
+                        <TextField fx:id="textEditCat" disable="true" layoutX="100.0" layoutY="267.0" prefHeight="23.0" prefWidth="252.0" visible="false" />
+                        <Button fx:id="buttonEditCat" disable="true" layoutX="383.0" layoutY="268.0" mnemonicParsing="false" text="Button" visible="false" />
                      </children>
                   </AnchorPane>
                </items>

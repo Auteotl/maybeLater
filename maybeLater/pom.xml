@@ -15,6 +15,13 @@
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.3.1</version>
+        </dependency>
+
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
@@ -37,6 +44,12 @@
             <artifactId>junit-jupiter-engine</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.sidnan</groupId>
+            <artifactId>NamedParameterPreparedStatement</artifactId>
+            <version>0.1</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
