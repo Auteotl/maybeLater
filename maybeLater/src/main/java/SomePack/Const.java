@@ -6,6 +6,8 @@ public class Const {
 
     public static final String ID_CAT =  "idCat";
     public static final String TYPE_CAT =  "typeCat";
+    public static final String TYPE_CHAPT  = "typeChapt";
+
     //url table
     public static final String URLTAB_TABLE =  "urlTab";
 
@@ -14,4 +16,9 @@ public class Const {
     public static final String DESCRIPTION =  "description";
     public static final String URL_CAT =  "urlCat";
     public static final String DATE =  "date";
+
+    //chapter table
+    public static final String CHAPTER_TABLE = "chapter";
+    public static final String ID_CHAPT = "idChapt";
+    public static final String CHAPT_TEXT = "chaptText";
 }
