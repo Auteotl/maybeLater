@@ -115,4 +115,16 @@ public class DataHandler extends Configs{
         return chaptNameForChoise;
     }
 
+    public ArrayList<String> takeCatArrayForTree (String chaptName) throws SQLException {
+        String select = "SELECT" + "(\"" + Const.TYPE_CAT + "\")" + " FROM " + Const.CATEGORY_TABLE  +
+                " WHERE " + "\"" + Const.TYPE_CHAPT + "\" = " + "(\'" + takeChaptWithCatId(chaptName) + "\')";
+        ArrayList<String> catArrayForTree= new ArrayList<>();
+        PreparedStatement prSt = dbConnection.prepareStatement(select);
+        ResultSet resultSet = prSt.executeQuery();
+        while(resultSet.next()){
+            catArrayForTree.add(resultSet.getString(Const.TYPE_CAT));
+        }
+        return catArrayForTree;
+    }
+
 }

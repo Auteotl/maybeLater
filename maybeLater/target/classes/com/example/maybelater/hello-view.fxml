@@ -101,6 +101,48 @@
                               <ButtonType fx:constant="CLOSE" />
                            </buttonTypes>
                         </DialogPane>
+                        <DialogPane fx:id="errorAddCat" layoutX="36.0" layoutY="211.0" prefHeight="114.0" prefWidth="431.0" style="-fx-border-color: black;" visible="false">
+                           <buttonTypes>
+                              <ButtonType fx:constant="OK" />
+                           </buttonTypes>
+                           <content>
+                              <AnchorPane prefHeight="72.0" prefWidth="3182.0">
+                                 <children>
+                                    <Label alignment="CENTER" layoutX="106.0" layoutY="1.0" prefHeight="27.0" prefWidth="220.0" text="Ошибка!">
+                                       <font>
+                                          <Font size="18.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="26.0" layoutY="36.0" prefHeight="39.0" prefWidth="392.0" text="Категория с таким названием уже существует">
+                                       <font>
+                                          <Font size="18.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </DialogPane>
+                        <DialogPane fx:id="errorAddChapt" layoutX="46.0" layoutY="221.0" prefHeight="114.0" prefWidth="431.0" style="-fx-border-color: black;" visible="false">
+                           <buttonTypes>
+                              <ButtonType fx:constant="OK" />
+                           </buttonTypes>
+                           <content>
+                              <AnchorPane prefHeight="72.0" prefWidth="3182.0">
+                                 <children>
+                                    <Label alignment="CENTER" layoutX="106.0" layoutY="1.0" prefHeight="27.0" prefWidth="220.0" text="Ошибка!">
+                                       <font>
+                                          <Font size="18.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="38.0" layoutY="34.0" prefHeight="39.0" prefWidth="369.0" text="Раздел с таким названием уже существует">
+                                       <font>
+                                          <Font size="18.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </DialogPane>
                      </children>
                   </AnchorPane>
                </items>

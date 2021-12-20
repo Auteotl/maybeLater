@@ -2,21 +2,16 @@ package com.example.maybelater;
 
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import SomePack.DataHandler;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.FlowPane;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import org.w3c.dom.events.MouseEvent;
+
 
 public class HelloController {
 
@@ -45,6 +40,12 @@ public class HelloController {
     private DialogPane dialogPaneAddCat;
 
     @FXML
+    private DialogPane errorAddCat;
+
+    @FXML
+    private DialogPane errorAddChapt;
+
+    @FXML
     private MenuItem menuAddCat;
 
     @FXML
@@ -63,7 +64,7 @@ public class HelloController {
     private TextField textAddChapt;
 
     @FXML
-    private TreeView<?> treeMenu;
+    private TreeView<String> treeMenu;
 
     @FXML
     private TextField urlField;
@@ -83,8 +84,6 @@ public class HelloController {
         } catch (ClassNotFoundException e) {
             System.out.println("no no no");
         }
-        urlField.setText("URL");
-        descriptionField.setText("Описание");
         categoryChoiseBox.setValue("Выбери категорию: ");
     });
 //Список ChoiseBox категории
@@ -94,7 +93,11 @@ public class HelloController {
 //Окно "Добавить категорию"
 
         menuAddCat.setOnAction(actionEvent -> {
+            if(dialogChaptAdd.isVisible()){
+                dialogChaptAdd.setVisible(false);
+            }
             dialogPaneAddCat.setVisible(true);
+
         });
 //Закрыть окно "Добавить категорию"
         dialogPaneAddCat.lookupButton(ButtonType.CLOSE).addEventFilter(ActionEvent.ACTION, event -> {
@@ -107,13 +110,17 @@ public class HelloController {
 //Добавление категории
         dialogPaneAddCat.lookupButton(ButtonType.OK).addEventFilter(ActionEvent.ACTION, event -> {
             try {
-                if(dialogChaptAdd.isVisible()){
-                    //нужно сделаать так, чтобы нельзя было открыть два окна одновременно
-                }
-                else if(textAddCat.getText()!="") {
-                    dbHandler.addNewCatInDB(textAddCat.getText().trim(),dbHandler.takeChaptWithCatId(choiseChapterAddCat.getValue()));
-                    dialogPaneAddCat.setVisible(false);
-                    textAddCat.clear();
+                if(textAddCat.getText().trim()!="") {
+                    if (dbHandler.takeCatNameForChoise().contains(textAddCat.getText().trim())) {
+                        errorAddCat.setVisible(true);
+                        errorAddCat.lookupButton(ButtonType.OK).addEventFilter(ActionEvent.ACTION, event1 -> {
+                            errorAddCat.setVisible(false);
+                        });
+                    } else {
+                        dbHandler.addNewCatInDB(textAddCat.getText().trim(), dbHandler.takeChaptWithCatId(choiseChapterAddCat.getValue()));
+                        dialogPaneAddCat.setVisible(false);
+                        textAddCat.clear();
+                    }
                 }
                 else dialogPaneAddCat.setVisible(false);
 
@@ -128,6 +135,9 @@ public class HelloController {
 //Окно "Добавить раздел"
 
         menuAddChapter.setOnAction(actionEvent -> {
+            if(dialogPaneAddCat.isVisible()){
+                dialogPaneAddCat.setVisible(false);
+            }
             dialogChaptAdd.setVisible(true);
         });
 
@@ -142,10 +152,17 @@ public class HelloController {
 //Добавление раздела
         dialogChaptAdd.lookupButton(ButtonType.OK).addEventFilter(ActionEvent.ACTION, event -> {
             try {
-                if(textAddChapt.getText()!=""){
-                    dbHandler.addNewChaptInDB(textAddChapt.getText().trim());
-                    dialogChaptAdd.setVisible(false);
-                    textAddChapt.clear();
+                if(textAddChapt.getText().trim()!="") {
+                    if (dbHandler.takeChaptNameForChoise().contains(textAddChapt.getText().trim())) {
+                        errorAddChapt.setVisible(true);
+                        errorAddChapt.lookupButton(ButtonType.OK).addEventFilter(ActionEvent.ACTION, event1 -> {
+                            errorAddChapt.setVisible(false);
+                        });
+                    } else {
+                        dbHandler.addNewChaptInDB(textAddChapt.getText().trim());
+                        dialogChaptAdd.setVisible(false);
+                        textAddChapt.clear();
+                    }
                 }
                else dialogChaptAdd.setVisible(false);
 
@@ -160,9 +177,38 @@ public class HelloController {
 
 //ChoiseBox для раздела
         choiseChapterAddCat.getItems().addAll(dbHandler.takeChaptNameForChoise());
-        choiseChapterAddCat.setValue("Chapter 2");
+        choiseChapterAddCat.setValue("Chapter 1");
+
+//Дерево
+        List<TreeItem> listTreeItem = new ArrayList<>();
+       for (int i = 0; i < dbHandler.takeChaptNameForChoise().size(); i++){
+            listTreeItem.add(new TreeItem<String>(dbHandler.takeChaptNameForChoise().get(i)));
+        }
+        TreeItem<String> root = new TreeItem<>("root");
+        root.setExpanded(true);
+        for (int i = 0; i < dbHandler.takeChaptNameForChoise().size(); i++){
+            root.getChildren().add(listTreeItem.get(i));
+        }
+
+        for (int i = 0; i < dbHandler.takeChaptNameForChoise().size(); i++){
+            for(int j = 0; j < dbHandler.takeCatArrayForTree(dbHandler.takeChaptNameForChoise().get(i)).size(); j++){
+                makeBranch(dbHandler.takeCatArrayForTree(dbHandler.takeChaptNameForChoise().get(i)).get(j),listTreeItem.get(i));
+             }
+            //listTreeItem.get(i).getChildren().add(new TreeItem<String>(dbHandler.takeCatArrayForTree(dbHandler.takeChaptNameForChoise().get(i)).get(i)));
+            //System.out.println(dbHandler.takeCatArrayForTree(dbHandler.takeChaptNameForChoise().get(i)).get(i));
+        }
+        treeMenu.setRoot(root);
+        treeMenu.setShowRoot(false);
+
+
+        //MultipleSelectionModel<TreeItem<String>> selectionModel = treeMenu.getSelectionModel();
+        //selectionModel.setSelectionMode(SelectionMode.SINGLE);
     }
-
-
-
+//Ветка дерева
+    public TreeItem<String> makeBranch(String title, TreeItem<String> parent){
+        TreeItem<String> item = new TreeItem<>(title);
+        item.setExpanded(true);
+        parent.getChildren().add(item);
+        return item;
+    }
 }
