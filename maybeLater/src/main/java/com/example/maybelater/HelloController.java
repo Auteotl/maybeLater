@@ -3,13 +3,18 @@ package com.example.maybelater;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import SomePack.DataHandler;
+import SomePack.TableBody;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 
 public class HelloController {
@@ -54,7 +59,7 @@ public class HelloController {
     private MenuBar menuBar;
 
     @FXML
-    private TableView<?> tableMain;
+    private TableView<TableBody> tableMain;
 
     @FXML
     private TextField textAddCat;
@@ -198,6 +203,35 @@ public class HelloController {
         }
         treeMenu.setRoot(root);
         treeMenu.setShowRoot(true);
+        treeMenu.getSelectionModel().selectedItemProperty()
+                .addListener((v, oldValue, newValue) -> {
+                    ObservableList<TableBody> obsURLList = FXCollections.observableArrayList(dbHandler.URLListView(newValue.getValue()));
+                    //Колонки
+
+                    //url
+                    TableColumn<TableBody, String> columnSomeURL = new TableColumn<>("URL");
+                    columnSomeURL.setMinWidth(200);
+                    columnSomeURL.setCellValueFactory(new PropertyValueFactory<>("someURL"));
+
+                    //deacription
+                    TableColumn<TableBody, String> columnDescription = new TableColumn<>("Описание");
+                    columnDescription.setMinWidth(200);
+                    columnDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
+
+                    //date
+                    TableColumn<TableBody, String> columnDate = new TableColumn<>("Дата");
+                    columnDate.setMinWidth(50);
+                    columnDate.setCellValueFactory(new PropertyValueFactory<>("date"));
+                    tableMain.setItems(obsURLList);
+                    tableMain.getColumns().addAll(columnSomeURL, columnDescription, columnDate);
+                });
+
+//Заполнение таблицы
+
+
+        //Заполнение таблицы
+        //tableMain.setItems(obsURLList);
+        //tableMain.getColumns().addAll(columnSomeURL, columnDescription, columnDate);
     }
 
     //Ветка дерева

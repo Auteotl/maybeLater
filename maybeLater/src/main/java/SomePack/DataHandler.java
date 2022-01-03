@@ -1,5 +1,9 @@
 package SomePack;
 
+import com.example.maybelater.HelloController;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import java.sql.*;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -7,9 +11,10 @@ import java.util.Properties;
 import java.time.LocalDate;
 
 
-public class DataHandler extends Configs{
+public class DataHandler extends Configs {
 
     Connection dbConnection;
+
     public Connection getDbConnection()
             throws ClassNotFoundException, SQLException {
         String connectionString = "jdbc:postgresql://" + dbHost + ":"
@@ -21,13 +26,13 @@ public class DataHandler extends Configs{
     }
 
 
-    public void addNewCatInDB (String catName, int chaptType) throws SQLException, ClassNotFoundException {
-        String insert = "INSERT INTO " + Const.CATEGORY_TABLE+ "(\"" + Const.TYPE_CAT + "\",\"" + Const.TYPE_CHAPT+ "\")" +
+    public void addNewCatInDB(String catName, int chaptType) throws SQLException, ClassNotFoundException {
+        String insert = "INSERT INTO " + Const.CATEGORY_TABLE + "(\"" + Const.TYPE_CAT + "\",\"" + Const.TYPE_CHAPT + "\")" +
                 " VALUES (?,?)";
 
         PreparedStatement prSt = getDbConnection().prepareStatement(insert);
-        prSt.setString(1,catName);
-        prSt.setInt(2,chaptType);
+        prSt.setString(1, catName);
+        prSt.setInt(2, chaptType);
 
         try {
             prSt.executeUpdate();
@@ -35,6 +40,7 @@ public class DataHandler extends Configs{
             e.printStackTrace();
         }
     }
+
     public int takeCatWithCatId(String catName) throws SQLException {
         String select = "SELECT" + "(\"" + Const.ID_CAT + "\")" + " FROM " + Const.CATEGORY_TABLE +
                 " WHERE " + "\"" + Const.TYPE_CAT + "\" = " + "(\'" + catName + "\')";
@@ -47,36 +53,37 @@ public class DataHandler extends Configs{
         return catId;
     }
 
-//Добавление строки в urlTab
-    public void addInfoInURLTab (String url, String urlDescr, int catName) throws SQLException, ClassNotFoundException {
+    //Добавление строки в urlTab
+    public void addInfoInURLTab(String url, String urlDescr, int catName) throws SQLException, ClassNotFoundException {
         String insert = "INSERT INTO " + "\"" + Const.URLTAB_TABLE + "\"" + "(\"" + Const.SOME_URL + "\",\"" +
                 Const.DESCRIPTION + "\",\"" + Const.URL_CAT + "\",\"" + Const.DATE + "\")" +
                 "VALUES (?, ?, ?, ?)";
         LocalDate localDate = LocalDate.now();
         PreparedStatement prSt = getDbConnection().prepareStatement(insert);
-        prSt.setString(1,url);
-        prSt.setString(2,urlDescr);
-        prSt.setInt(3,catName);
+        prSt.setString(1, url);
+        prSt.setString(2, urlDescr);
+        prSt.setInt(3, catName);
         prSt.setObject(4, localDate);
 
         prSt.executeUpdate();
 
     }
 
-// Метод для передачи списка категорий в ChoiseBox
-    public ArrayList<String> takeCatNameForChoise () throws SQLException, ClassNotFoundException {
+    //Метод для передачи списка категорий в ChoiseBox
+    public ArrayList<String> takeCatNameForChoise() throws SQLException, ClassNotFoundException {
         String select = "SELECT" + "(\"" + Const.TYPE_CAT + "\")" + " FROM " + Const.CATEGORY_TABLE;
         ArrayList<String> catNameForChoise = new ArrayList<>();
 
         PreparedStatement prSt = getDbConnection().prepareStatement(select);
         ResultSet resultSet = prSt.executeQuery();
-        while(resultSet.next()){
+        while (resultSet.next()) {
             catNameForChoise.add(resultSet.getString(Const.TYPE_CAT));
         }
 
         return catNameForChoise;
     }
-//CHAPTER TABLE
+
+    //CHAPTER TABLE
     public int takeChaptWithCatId(String chaptName) throws SQLException {
         String select = "SELECT" + "(\"" + Const.ID_CHAPT + "\")" + " FROM " + Const.CHAPTER_TABLE +
                 " WHERE " + "\"" + Const.CHAPT_TEXT + "\" = " + "(\'" + chaptName + "\')";
@@ -88,12 +95,14 @@ public class DataHandler extends Configs{
         }
         return chaptId;
     }
-    public void addNewChaptInDB (String chaptName) throws SQLException, ClassNotFoundException {
-        String insert = "INSERT INTO " + Const.CHAPTER_TABLE+ "(\"" + Const.CHAPT_TEXT + "\")" +
+
+    //Добавление нового раздела
+    public void addNewChaptInDB(String chaptName) throws SQLException, ClassNotFoundException {
+        String insert = "INSERT INTO " + Const.CHAPTER_TABLE + "(\"" + Const.CHAPT_TEXT + "\")" +
                 " VALUES (?)";
 
         PreparedStatement prSt = getDbConnection().prepareStatement(insert);
-        prSt.setString(1,chaptName);
+        prSt.setString(1, chaptName);
 
         try {
             prSt.executeUpdate();
@@ -102,29 +111,61 @@ public class DataHandler extends Configs{
         }
     }
 
-    public ArrayList<String> takeChaptNameForChoise () throws SQLException, ClassNotFoundException {
+    //Метод для передачи списка разделов в ChoiseBox
+    public ArrayList<String> takeChaptNameForChoise() throws SQLException, ClassNotFoundException {
         String select = "SELECT" + "(\"" + Const.CHAPT_TEXT + "\")" + " FROM " + Const.CHAPTER_TABLE;
         ArrayList<String> chaptNameForChoise = new ArrayList<>();
 
         PreparedStatement prSt = getDbConnection().prepareStatement(select);
         ResultSet resultSet = prSt.executeQuery();
-        while(resultSet.next()){
+        while (resultSet.next()) {
             chaptNameForChoise.add(resultSet.getString(Const.CHAPT_TEXT));
         }
 
         return chaptNameForChoise;
     }
 
-    public ArrayList<String> takeCatArrayForTree (String chaptName) throws SQLException {
-        String select = "SELECT" + "(\"" + Const.TYPE_CAT + "\")" + " FROM " + Const.CATEGORY_TABLE  +
+    //Метод для получения списка категорий (для Treeview)
+    public ArrayList<String> takeCatArrayForTree(String chaptName) throws SQLException {
+        String select = "SELECT" + "(\"" + Const.TYPE_CAT + "\")" + " FROM " + Const.CATEGORY_TABLE +
                 " WHERE " + "\"" + Const.TYPE_CHAPT + "\" = " + "(\'" + takeChaptWithCatId(chaptName) + "\')";
-        ArrayList<String> catArrayForTree= new ArrayList<>();
+        ArrayList<String> catArrayForTree = new ArrayList<>();
         PreparedStatement prSt = dbConnection.prepareStatement(select);
         ResultSet resultSet = prSt.executeQuery();
-        while(resultSet.next()){
+        while (resultSet.next()) {
             catArrayForTree.add(resultSet.getString(Const.TYPE_CAT));
         }
         return catArrayForTree;
+    }
+
+    //Методы для главное таблицы
+    //Список ссылок
+    public ArrayList<TableBody> URLListView(String catName) {
+        ArrayList<TableBody> urlList = new ArrayList<>();
+        try {
+            // String select = "SELECT" + "\"" + Const.SOME_URL + "\"" + ",\"" + Const.DESCRIPTION + "\"" +
+            //        ",\"" + Const.DATE + "\"" + "FROM " + "\"" + Const.URLTAB_TABLE + "\"";
+            String select = "SELECT * FROM" +"\"" + Const.URLTAB_TABLE + "\""
+                    + "WHERE " + "\"" + Const.URL_CAT + "\"" + " = " + takeCatWithCatId(catName);
+            PreparedStatement prSt = dbConnection.prepareStatement(select);
+            ResultSet resultSet = prSt.executeQuery();
+            int columns = resultSet.getMetaData().getColumnCount();
+            System.out.println(columns);
+            ArrayList<String> buff = new ArrayList<>();
+            while (resultSet.next()) {
+                for (int i = 1; i <= columns; i++) {
+                    String current = resultSet.getString(i);
+                    buff.add(current);
+                    if(buff.size()==columns){
+                        urlList.add(new TableBody(Integer.parseInt(buff.get(0)), buff.get(1),buff.get(2),Integer.parseInt(buff.get(3)), buff.get(4)));
+                        buff.clear();
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return urlList;
     }
 
 }

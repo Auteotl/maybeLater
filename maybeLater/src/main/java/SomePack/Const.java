@@ -21,4 +21,5 @@ public class Const {
     public static final String CHAPTER_TABLE = "chapter";
     public static final String ID_CHAPT = "idChapt";
     public static final String CHAPT_TEXT = "chaptText";
+
 }
