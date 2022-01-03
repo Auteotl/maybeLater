@@ -40,7 +40,7 @@ public class DataHandler extends Configs {
             e.printStackTrace();
         }
     }
-
+    //Получение id категории по имени
     public int takeCatWithCatId(String catName) throws SQLException {
         String select = "SELECT" + "(\"" + Const.ID_CAT + "\")" + " FROM " + Const.CATEGORY_TABLE +
                 " WHERE " + "\"" + Const.TYPE_CAT + "\" = " + "(\'" + catName + "\')";
@@ -51,6 +51,18 @@ public class DataHandler extends Configs {
             catId = resultSet.getInt(Const.ID_CAT);
         }
         return catId;
+    }
+    //Получение id раздела по имени
+    public int takeChaptWithChaptId(String chaptName) throws SQLException {
+        String select = "SELECT" + "(\"" + Const.ID_CHAPT + "\")" + " FROM " + Const.CHAPTER_TABLE +
+                " WHERE " + "\"" + Const.CHAPT_TEXT + "\" = " + "(\'" + chaptName + "\')";
+        int chaptId = 0;
+        PreparedStatement prSt = dbConnection.prepareStatement(select);
+        ResultSet resultSet = prSt.executeQuery();
+        while (resultSet.next()) {
+            chaptId = resultSet.getInt(Const.ID_CAT);
+        }
+        return chaptId;
     }
 
     //Добавление строки в urlTab
@@ -137,8 +149,15 @@ public class DataHandler extends Configs {
         }
         return catArrayForTree;
     }
+    public void deleteChaptFromDB(String chaptName) throws SQLException {
+        String delete = "DELETE FROM " + "\"" + Const.CHAPTER_TABLE + "\""
+                + " WHERE " + "\"" + Const.ID_CHAPT + "\"" + " = "
+                + takeChaptWithChaptId(chaptName);
+        PreparedStatement prSt = dbConnection.prepareStatement(delete);
+        prSt.executeUpdate();
 
-    //Методы для главное таблицы
+    }
+    //Методы для главной таблицы
     //Список ссылок
     public ArrayList<TableBody> URLListView(String catName) {
         ArrayList<TableBody> urlList = new ArrayList<>();
@@ -150,7 +169,6 @@ public class DataHandler extends Configs {
             PreparedStatement prSt = dbConnection.prepareStatement(select);
             ResultSet resultSet = prSt.executeQuery();
             int columns = resultSet.getMetaData().getColumnCount();
-            System.out.println(columns);
             ArrayList<String> buff = new ArrayList<>();
             while (resultSet.next()) {
                 for (int i = 1; i <= columns; i++) {
@@ -167,5 +185,6 @@ public class DataHandler extends Configs {
         }
         return urlList;
     }
+
 
 }

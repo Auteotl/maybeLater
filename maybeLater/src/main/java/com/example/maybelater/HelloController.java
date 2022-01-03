@@ -12,9 +12,11 @@ import SomePack.TableBody;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseButton;
 
 
 public class HelloController {
@@ -72,6 +74,15 @@ public class HelloController {
 
     @FXML
     private TextField urlField;
+
+    @FXML
+    private ContextMenu contextMenuTreeView;
+
+    @FXML
+    private MenuItem contextDelCat;
+
+    @FXML
+    private MenuItem contextEditCat;
 
     @FXML
     void initialize() throws SQLException, ClassNotFoundException {
@@ -201,37 +212,50 @@ public class HelloController {
             }
 
         }
+
+
         treeMenu.setRoot(root);
         treeMenu.setShowRoot(true);
-        treeMenu.getSelectionModel().selectedItemProperty()
-                .addListener((v, oldValue, newValue) -> {
-                    ObservableList<TableBody> obsURLList = FXCollections.observableArrayList(dbHandler.URLListView(newValue.getValue()));
-                    //Колонки
+        //Колонки
 
-                    //url
-                    TableColumn<TableBody, String> columnSomeURL = new TableColumn<>("URL");
-                    columnSomeURL.setMinWidth(200);
-                    columnSomeURL.setCellValueFactory(new PropertyValueFactory<>("someURL"));
+        //url
+        TableColumn<TableBody, String> columnSomeURL = new TableColumn<>("URL");
+        columnSomeURL.setMinWidth(200);
+        columnSomeURL.setCellValueFactory(new PropertyValueFactory<>("someURL"));
 
-                    //deacription
-                    TableColumn<TableBody, String> columnDescription = new TableColumn<>("Описание");
-                    columnDescription.setMinWidth(200);
-                    columnDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
+        //deacription
+        TableColumn<TableBody, String> columnDescription = new TableColumn<>("Описание");
+        columnDescription.setMinWidth(200);
+        columnDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
 
-                    //date
-                    TableColumn<TableBody, String> columnDate = new TableColumn<>("Дата");
-                    columnDate.setMinWidth(50);
-                    columnDate.setCellValueFactory(new PropertyValueFactory<>("date"));
-                    tableMain.setItems(obsURLList);
-                    tableMain.getColumns().addAll(columnSomeURL, columnDescription, columnDate);
-                });
+        //date
+        TableColumn<TableBody, String> columnDate = new TableColumn<>("Дата");
+        columnDate.setMinWidth(50);
+        columnDate.setCellValueFactory(new PropertyValueFactory<>("date"));
+        tableMain.getColumns().addAll(columnSomeURL, columnDescription, columnDate);
 
-//Заполнение таблицы
+        treeMenu.setOnMouseClicked(mouseEvent -> {
+            if (mouseEvent.getButton() == MouseButton.PRIMARY){
+                treeMenu.getSelectionModel().selectedItemProperty()
+                        .addListener((v, oldValue, newValue) -> {
+                            ObservableList<TableBody> obsURLList = FXCollections.observableArrayList(dbHandler.URLListView(newValue.getValue()));
 
+                            tableMain.setItems(obsURLList);
 
-        //Заполнение таблицы
-        //tableMain.setItems(obsURLList);
-        //tableMain.getColumns().addAll(columnSomeURL, columnDescription, columnDate);
+                        });
+            }
+          else if(mouseEvent.getButton()==MouseButton.SECONDARY){
+            contextEditCat.setOnAction(event -> System.out.println("Edit is ok"));
+            contextDelCat.setOnAction(event -> {
+                try {
+
+                    dbHandler.deleteChaptFromDB(treeMenu.getSelectionModel().getSelectedItem().getValue());
+                } catch (SQLException e) {
+                    System.out.println("Увы и ах");
+                }
+            });
+            }
+        });
     }
 
     //Ветка дерева
