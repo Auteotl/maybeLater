@@ -95,6 +95,13 @@ public class HelloController {
     private MenuItem contextEditCat;
 
     @FXML
+    private DialogPane confirmWindowTable;
+
+    @FXML
+    private Label labelConfirmWindowTable;
+
+
+    @FXML
     void initialize() throws SQLException, ClassNotFoundException {
         DataHandler dbHandler = new DataHandler();
 
@@ -249,10 +256,9 @@ public class HelloController {
             if (mouseEvent.getButton() == MouseButton.PRIMARY){
                 treeMenu.getSelectionModel().selectedItemProperty()
                         .addListener((v, oldValue, newValue) -> {
-                            ObservableList<TableBody> obsURLList = FXCollections.observableArrayList(dbHandler.URLListView(newValue.getValue()));
-
+                            ObservableList<TableBody> obsURLList
+                                    = FXCollections.observableArrayList(dbHandler.URLListView(newValue.getValue()));
                             tableMain.setItems(obsURLList);
-
                         });
             }
         //Правый щелчок мыши по TreeMenu
@@ -272,6 +278,32 @@ public class HelloController {
                     confirmWindow.setVisible(false);
                 });
             });
+            }
+        });
+        tableMain.setOnMouseClicked(mouseEvent -> {
+            if(mouseEvent.getButton()==MouseButton.PRIMARY){
+                System.out.println("Go go go!");
+            }
+            else if(mouseEvent.getButton()==MouseButton.SECONDARY){
+                contextEditCat.setOnAction(event -> {
+                    
+                });
+                contextDelCat.setOnAction(event -> {
+                    confirmWindowTable.setVisible(true);
+                    confirmWindowTable.lookupButton(ButtonType.YES).addEventFilter(ActionEvent.ACTION, event1 -> {
+                        try {
+                            dbHandler.deleteStringFromDB(tableMain.getSelectionModel().getSelectedItem().getUrlId());
+                            confirmWindowTable.setVisible(false);
+                        } catch (SQLException e) {
+                            System.out.println("Ha ha ha");
+                            e.printStackTrace();
+                        }
+                    });
+                    confirmWindowTable.lookupButton(ButtonType.NO).addEventFilter(ActionEvent.ACTION, event1 -> {
+                        confirmWindowTable.setVisible(false);
+                    });
+                });
+
             }
         });
     }

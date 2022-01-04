@@ -157,15 +157,22 @@ public class DataHandler extends Configs {
                 + takeChaptWithChaptId(chaptName);
         PreparedStatement prSt = dbConnection.prepareStatement(delete);
         prSt.executeUpdate();
-
     }
+
+    //Delete URL String
+    public void deleteStringFromDB(int urlId) throws SQLException {
+        String delete = "DELETE FROM " + "\"" + Const.URLTAB_TABLE + "\""
+                + " WHERE " + "\"" + Const.ID_URL + "\"" + " = "
+                + urlId;
+        PreparedStatement prSt = dbConnection.prepareStatement(delete);
+        prSt.executeUpdate();
+    }
+
     //Методы для главной таблицы
     //Список ссылок
     public ArrayList<TableBody> URLListView(String catName) {
         ArrayList<TableBody> urlList = new ArrayList<>();
         try {
-            // String select = "SELECT" + "\"" + Const.SOME_URL + "\"" + ",\"" + Const.DESCRIPTION + "\"" +
-            //        ",\"" + Const.DATE + "\"" + "FROM " + "\"" + Const.URLTAB_TABLE + "\"";
             String select = "SELECT * FROM" +"\"" + Const.URLTAB_TABLE + "\""
                     + "WHERE " + "\"" + Const.URL_CAT + "\"" + " = " + takeCatWithCatId(catName);
             PreparedStatement prSt = dbConnection.prepareStatement(select);
