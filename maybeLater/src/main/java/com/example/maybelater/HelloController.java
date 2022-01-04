@@ -17,6 +17,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
+import org.w3c.dom.Text;
 
 
 public class HelloController {
@@ -50,6 +51,15 @@ public class HelloController {
 
     @FXML
     private DialogPane errorAddChapt;
+
+    @FXML
+    private DialogPane confirmWindow;
+
+    @FXML
+    private Label labelConfirmWindow;
+
+    //@FXML
+   // private Text textConfirmWindow;
 
     @FXML
     private MenuItem menuAddCat;
@@ -234,6 +244,7 @@ public class HelloController {
         columnDate.setCellValueFactory(new PropertyValueFactory<>("date"));
         tableMain.getColumns().addAll(columnSomeURL, columnDescription, columnDate);
 
+        //Левый щелчок мыши по TreeMenu
         treeMenu.setOnMouseClicked(mouseEvent -> {
             if (mouseEvent.getButton() == MouseButton.PRIMARY){
                 treeMenu.getSelectionModel().selectedItemProperty()
@@ -244,15 +255,22 @@ public class HelloController {
 
                         });
             }
+        //Правый щелчок мыши по TreeMenu
           else if(mouseEvent.getButton()==MouseButton.SECONDARY){
             contextEditCat.setOnAction(event -> System.out.println("Edit is ok"));
             contextDelCat.setOnAction(event -> {
-                try {
-
-                    dbHandler.deleteChaptFromDB(treeMenu.getSelectionModel().getSelectedItem().getValue());
-                } catch (SQLException e) {
-                    System.out.println("Увы и ах");
-                }
+                confirmWindow.setVisible(true);
+                confirmWindow.lookupButton(ButtonType.YES).addEventFilter(ActionEvent.ACTION, event1 -> {
+                    try {
+                        dbHandler.deleteChaptFromDB(treeMenu.getSelectionModel().getSelectedItem().getValue());
+                        confirmWindow.setVisible(false);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                });
+                confirmWindow.lookupButton(ButtonType.NO).addEventFilter(ActionEvent.ACTION, event1 -> {
+                    confirmWindow.setVisible(false);
+                });
             });
             }
         });

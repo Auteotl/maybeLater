@@ -54,13 +54,13 @@ public class DataHandler extends Configs {
     }
     //Получение id раздела по имени
     public int takeChaptWithChaptId(String chaptName) throws SQLException {
-        String select = "SELECT" + "(\"" + Const.ID_CHAPT + "\")" + " FROM " + Const.CHAPTER_TABLE +
+        String select = "SELECT" + "(\"" + Const.ID_CHAPT + "\")" + " FROM " +  "\"" + Const.CHAPTER_TABLE + "\"" +
                 " WHERE " + "\"" + Const.CHAPT_TEXT + "\" = " + "(\'" + chaptName + "\')";
         int chaptId = 0;
         PreparedStatement prSt = dbConnection.prepareStatement(select);
         ResultSet resultSet = prSt.executeQuery();
         while (resultSet.next()) {
-            chaptId = resultSet.getInt(Const.ID_CAT);
+            chaptId = resultSet.getInt(Const.ID_CHAPT);
         }
         return chaptId;
     }
@@ -149,6 +149,8 @@ public class DataHandler extends Configs {
         }
         return catArrayForTree;
     }
+
+    //Метод удаление раздела
     public void deleteChaptFromDB(String chaptName) throws SQLException {
         String delete = "DELETE FROM " + "\"" + Const.CHAPTER_TABLE + "\""
                 + " WHERE " + "\"" + Const.ID_CHAPT + "\"" + " = "
