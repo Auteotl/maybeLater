@@ -168,6 +168,15 @@ public class DataHandler extends Configs {
         prSt.executeUpdate();
     }
 
+    //Delete Category
+    public void deleteCatFromDB(String catName) throws SQLException {
+        String delete = "DELETE FROM " + "\"" + Const.CATEGORY_TABLE + "\""
+                + " WHERE " + "\"" + Const.ID_CAT + "\"" + " = "
+                + takeCatWithCatId(catName);
+        PreparedStatement prSt = dbConnection.prepareStatement(delete);
+        prSt.executeUpdate();
+    }
+
     //Методы для главной таблицы
     //Список ссылок
     public ArrayList<TableBody> URLListView(String catName) {

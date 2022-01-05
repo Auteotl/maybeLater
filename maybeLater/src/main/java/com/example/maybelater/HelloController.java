@@ -3,21 +3,21 @@ package com.example.maybelater;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import SomePack.DataHandler;
 import SomePack.TableBody;
+import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
-import org.w3c.dom.Text;
+import javafx.stage.Stage;
 
 
 public class HelloController {
@@ -267,14 +267,26 @@ public class HelloController {
             contextDelCat.setOnAction(event -> {
                 confirmWindow.setVisible(true);
                 confirmWindow.lookupButton(ButtonType.YES).addEventFilter(ActionEvent.ACTION, event1 -> {
+                    if(treeMenu.getSelectionModel().getSelectedItem().getParent().equals(root)){
                     try {
                         dbHandler.deleteChaptFromDB(treeMenu.getSelectionModel().getSelectedItem().getValue());
                         confirmWindow.setVisible(false);
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
+                }
+                else {
+                        try {
+                            dbHandler.deleteCatFromDB(treeMenu.getSelectionModel().getSelectedItem().getValue());
+                            confirmWindow.setVisible(false);
+                        } catch (SQLException e) {
+                            System.out.println("Loooooser");
+                            e.printStackTrace();
+                        }
+
+                    }
                 });
-                confirmWindow.lookupButton(ButtonType.NO).addEventFilter(ActionEvent.ACTION, event1 -> {
+                    confirmWindow.lookupButton(ButtonType.NO).addEventFilter(ActionEvent.ACTION, event1 -> {
                     confirmWindow.setVisible(false);
                 });
             });
@@ -282,11 +294,19 @@ public class HelloController {
         });
         tableMain.setOnMouseClicked(mouseEvent -> {
             if(mouseEvent.getButton()==MouseButton.PRIMARY){
-                System.out.println("Go go go!");
+                if(mouseEvent.getClickCount()==2){
+                   Application app = new Application() {
+                       @Override
+                       public void start(Stage stage) throws Exception {
+
+                       }
+                   };
+                    app.getHostServices().showDocument(tableMain.getSelectionModel().getSelectedItem().getSomeURL());
+                }
             }
             else if(mouseEvent.getButton()==MouseButton.SECONDARY){
                 contextEditCat.setOnAction(event -> {
-                    
+
                 });
                 contextDelCat.setOnAction(event -> {
                     confirmWindowTable.setVisible(true);
@@ -303,7 +323,6 @@ public class HelloController {
                         confirmWindowTable.setVisible(false);
                     });
                 });
-
             }
         });
     }
