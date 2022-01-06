@@ -8,6 +8,7 @@ public class TableBody {
     private String description;
     private int urlCat;
     private String date;
+    private boolean isVisited;
 
     public TableBody() {
         this.urlId = 0;
@@ -15,6 +16,7 @@ public class TableBody {
         this.description = "";
         this.urlCat = 0;
         this.date = "";
+        this.isVisited = false;
     }
     public void setUrlId(int urlId) {
         this.urlId = urlId;
@@ -55,12 +57,13 @@ public class TableBody {
         return date;
     }
 
-    public TableBody(int urlId, String someURL, String description, int urlCat, String date) {
+    public TableBody(int urlId, String someURL, String description, int urlCat, String date, boolean isVisited) {
         this.urlId = urlId;
         this.someURL = someURL;
         this.description = description;
         this.urlCat = urlCat;
         this.date = date;
+        this.isVisited = isVisited;
     }
 
 }

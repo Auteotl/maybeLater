@@ -1,6 +1,7 @@
 package SomePack;
 
 import com.example.maybelater.HelloController;
+import javafx.beans.binding.BooleanBinding;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -40,6 +41,7 @@ public class DataHandler extends Configs {
             e.printStackTrace();
         }
     }
+
     //Получение id категории по имени
     public int takeCatWithCatId(String catName) throws SQLException {
         String select = "SELECT" + "(\"" + Const.ID_CAT + "\")" + " FROM " + Const.CATEGORY_TABLE +
@@ -52,9 +54,10 @@ public class DataHandler extends Configs {
         }
         return catId;
     }
+
     //Получение id раздела по имени
     public int takeChaptWithChaptId(String chaptName) throws SQLException {
-        String select = "SELECT" + "(\"" + Const.ID_CHAPT + "\")" + " FROM " +  "\"" + Const.CHAPTER_TABLE + "\"" +
+        String select = "SELECT" + "(\"" + Const.ID_CHAPT + "\")" + " FROM " + "\"" + Const.CHAPTER_TABLE + "\"" +
                 " WHERE " + "\"" + Const.CHAPT_TEXT + "\" = " + "(\'" + chaptName + "\')";
         int chaptId = 0;
         PreparedStatement prSt = dbConnection.prepareStatement(select);
@@ -65,7 +68,7 @@ public class DataHandler extends Configs {
         return chaptId;
     }
 
-    //Добавление строки в urlTab
+     //Добавление строки в urlTab
     public void addInfoInURLTab(String url, String urlDescr, int catName) throws SQLException, ClassNotFoundException {
         String insert = "INSERT INTO " + "\"" + Const.URLTAB_TABLE + "\"" + "(\"" + Const.SOME_URL + "\",\"" +
                 Const.DESCRIPTION + "\",\"" + Const.URL_CAT + "\",\"" + Const.DATE + "\")" +
@@ -96,7 +99,7 @@ public class DataHandler extends Configs {
     }
 
     //CHAPTER TABLE
-    public int takeChaptWithCatId(String chaptName) throws SQLException {
+    public int takeChaptId(String chaptName) throws SQLException {
         String select = "SELECT" + "(\"" + Const.ID_CHAPT + "\")" + " FROM " + Const.CHAPTER_TABLE +
                 " WHERE " + "\"" + Const.CHAPT_TEXT + "\" = " + "(\'" + chaptName + "\')";
         int chaptId = 0;
@@ -140,7 +143,7 @@ public class DataHandler extends Configs {
     //Метод для получения списка категорий (для Treeview)
     public ArrayList<String> takeCatArrayForTree(String chaptName) throws SQLException {
         String select = "SELECT" + "(\"" + Const.TYPE_CAT + "\")" + " FROM " + Const.CATEGORY_TABLE +
-                " WHERE " + "\"" + Const.TYPE_CHAPT + "\" = " + "(\'" + takeChaptWithCatId(chaptName) + "\')";
+                " WHERE " + "\"" + Const.TYPE_CHAPT + "\" = " + "(\'" + takeChaptId(chaptName) + "\')";
         ArrayList<String> catArrayForTree = new ArrayList<>();
         PreparedStatement prSt = dbConnection.prepareStatement(select);
         ResultSet resultSet = prSt.executeQuery();
@@ -182,7 +185,7 @@ public class DataHandler extends Configs {
     public ArrayList<TableBody> URLListView(String catName) {
         ArrayList<TableBody> urlList = new ArrayList<>();
         try {
-            String select = "SELECT * FROM" +"\"" + Const.URLTAB_TABLE + "\""
+            String select = "SELECT * FROM" + "\"" + Const.URLTAB_TABLE + "\""
                     + "WHERE " + "\"" + Const.URL_CAT + "\"" + " = " + takeCatWithCatId(catName);
             PreparedStatement prSt = dbConnection.prepareStatement(select);
             ResultSet resultSet = prSt.executeQuery();
@@ -192,8 +195,9 @@ public class DataHandler extends Configs {
                 for (int i = 1; i <= columns; i++) {
                     String current = resultSet.getString(i);
                     buff.add(current);
-                    if(buff.size()==columns){
-                        urlList.add(new TableBody(Integer.parseInt(buff.get(0)), buff.get(1),buff.get(2),Integer.parseInt(buff.get(3)), buff.get(4)));
+                    if (buff.size() == columns) {
+                        urlList.add(new TableBody(Integer.parseInt(buff.get(0)), buff.get(1), buff.get(2),
+                                Integer.parseInt(buff.get(3)), buff.get(4), Boolean.getBoolean(buff.get(5))));
                         buff.clear();
                     }
                 }
@@ -204,5 +208,29 @@ public class DataHandler extends Configs {
         return urlList;
     }
 
+    //Обновление значения isVisited
+    public void updateIsVisited(int idUrl) throws SQLException {
+        String update = "UPDATE " + "\"" + Const.URLTAB_TABLE + "\"" + "SET " + "\"" + Const.ISVISITED + "\"" + " = " + "\'true\'"
+                + " WHERE " + "\"" + Const.ID_URL + "\"" + " = " + idUrl;
+        PreparedStatement prSt = dbConnection.prepareStatement(update);
+        prSt.executeUpdate();
+    }
+
+    //Обновление названия категории
+    public void updateCategoryName(int idCat, String catName) throws SQLException {
+        String update = "UPDATE " + "\"" + Const.CATEGORY_TABLE + "\"" +
+                "SET " + "\"" + Const.TYPE_CAT + "\"" + " = " + "\'" + catName + "\'"
+                + " WHERE " + "\"" + Const.ID_CAT + "\"" + " = " + idCat;
+        PreparedStatement prSt = dbConnection.prepareStatement(update);
+        prSt.executeUpdate();
+    }
+    //Обновление раздела категории
+    public void updateCategoryChapt(int idCat, String chaptName) throws SQLException {
+        String update = "UPDATE " + "\"" + Const.CATEGORY_TABLE + "\""
+                + "SET " + "\"" + Const.TYPE_CHAPT + "\"" + " = " + takeChaptId(chaptName)
+                + " WHERE " + "\"" + Const.ID_CAT + "\"" + " = " + idCat;
+        PreparedStatement prSt = dbConnection.prepareStatement(update);
+        prSt.executeUpdate();
+    }
 
 }

@@ -56,12 +56,6 @@ public class HelloController {
     private DialogPane confirmWindow;
 
     @FXML
-    private Label labelConfirmWindow;
-
-    //@FXML
-   // private Text textConfirmWindow;
-
-    @FXML
     private MenuItem menuAddCat;
 
     @FXML
@@ -86,9 +80,6 @@ public class HelloController {
     private TextField urlField;
 
     @FXML
-    private ContextMenu contextMenuTreeView;
-
-    @FXML
     private MenuItem contextDelCat;
 
     @FXML
@@ -98,8 +89,13 @@ public class HelloController {
     private DialogPane confirmWindowTable;
 
     @FXML
-    private Label labelConfirmWindowTable;
+    private DialogPane dialogPaneEditCat;
 
+    @FXML
+    private TextField textEditCat;
+
+    @FXML
+    private ChoiceBox<String> choiseChapterEditCat;
 
     @FXML
     void initialize() throws SQLException, ClassNotFoundException {
@@ -149,7 +145,7 @@ public class HelloController {
                         });
                     } else {
                         dbHandler.addNewCatInDB(textAddCat.getText().trim(),
-                                dbHandler.takeChaptWithCatId(choiseChapterAddCat.getValue()));
+                                dbHandler.takeChaptId(choiseChapterAddCat.getValue()));
                         dialogPaneAddCat.setVisible(false);
                         textAddCat.clear();
                     }
@@ -208,7 +204,7 @@ public class HelloController {
 //ChoiseBox для раздела
         choiseChapterAddCat.getItems().addAll(dbHandler.takeChaptNameForChoise());
         choiseChapterAddCat.setValue("Chapter 1");
-
+        choiseChapterEditCat.getItems().addAll(dbHandler.takeChaptNameForChoise());
 //Дерево
         List<TreeItem> listTreeItem = new ArrayList<>();
         for (int i = 0; i < dbHandler.takeChaptNameForChoise().size(); i++) {
@@ -219,7 +215,6 @@ public class HelloController {
         for (int i = 0; i < dbHandler.takeChaptNameForChoise().size(); i++) {
             root.getChildren().add(listTreeItem.get(i));
         }
-
         for (int i = 0; i < dbHandler.takeChaptNameForChoise().size(); i++) {
             for (int j = 0; j < dbHandler.takeCatArrayForTree(dbHandler.takeChaptNameForChoise().get(i)).size(); j++) {
                 makeBranch(
@@ -263,7 +258,42 @@ public class HelloController {
             }
         //Правый щелчок мыши по TreeMenu
           else if(mouseEvent.getButton()==MouseButton.SECONDARY){
-            contextEditCat.setOnAction(event -> System.out.println("Edit is ok"));
+
+//Контекстное меню -> Изменить
+            contextEditCat.setOnAction(event -> {
+            dialogPaneEditCat.setVisible(true);
+            String buffCat = treeMenu.getSelectionModel().getSelectedItem().getValue();
+            String buffChapt = treeMenu.getSelectionModel().getSelectedItem().getParent().getValue();
+            choiseChapterEditCat.setValue(buffChapt);
+            textEditCat.setText(buffCat);
+            dialogPaneEditCat.lookupButton(ButtonType.OK).addEventFilter(ActionEvent.ACTION, event1 -> {
+                if (!(textEditCat.getText().equals(buffCat))){
+                    try {
+                        dbHandler.updateCategoryName(dbHandler.takeCatWithCatId(buffCat), textEditCat.getText());
+                        System.out.println("Cat is ok");
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println("Next");
+                }
+                if(!(choiseChapterEditCat.getValue().equals(buffChapt))){
+                    System.out.println("urwellcome");
+                    try {
+                        System.out.println(dbHandler.takeCatWithCatId(buffCat) + choiseChapterEditCat.getValue());
+                        dbHandler.updateCategoryChapt(dbHandler.takeCatWithCatId(buffCat), choiseChapterEditCat.getValue());
+                        System.out.println("Chapt is ok");
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+                dialogPaneEditCat.setVisible(false);
+            });
+                dialogPaneEditCat.lookupButton(ButtonType.CLOSE).addEventFilter(ActionEvent.ACTION, event1 -> {
+                    dialogPaneEditCat.setVisible(false);
+                });
+            });
+
+//Контекстное меню -> Удалить
             contextDelCat.setOnAction(event -> {
                 confirmWindow.setVisible(true);
                 confirmWindow.lookupButton(ButtonType.YES).addEventFilter(ActionEvent.ACTION, event1 -> {
@@ -283,7 +313,6 @@ public class HelloController {
                             System.out.println("Loooooser");
                             e.printStackTrace();
                         }
-
                     }
                 });
                     confirmWindow.lookupButton(ButtonType.NO).addEventFilter(ActionEvent.ACTION, event1 -> {
@@ -302,6 +331,11 @@ public class HelloController {
                        }
                    };
                     app.getHostServices().showDocument(tableMain.getSelectionModel().getSelectedItem().getSomeURL());
+                    try {
+                        dbHandler.updateIsVisited(tableMain.getSelectionModel().getSelectedItem().getUrlId());
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
             else if(mouseEvent.getButton()==MouseButton.SECONDARY){

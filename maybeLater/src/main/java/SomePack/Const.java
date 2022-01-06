@@ -16,6 +16,7 @@ public class Const {
     public static final String DESCRIPTION =  "description";
     public static final String URL_CAT =  "urlCat";
     public static final String DATE =  "date";
+    public static final String ISVISITED = "isVisited";
 
     //chapter table
     public static final String CHAPTER_TABLE = "chapter";
