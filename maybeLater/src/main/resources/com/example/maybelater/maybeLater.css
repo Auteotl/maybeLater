@@ -1,3 +1,8 @@
 .table-view .column-header-background {
     -fx-background-color: red;
 }
+.table-view-place-holder{
+  -fx-background-color:linear-gradient(from 50px 14px to 50px 40px , repeat,  #e8e8e8 49% , #f7f7f7 12% );
+  -fx-border-width: 0px 1px 0px 0px;
+  -fx-border-color: linear-gradient(from 50px 14px to 50px 40px , repeat, #3D4549 49% , #232a2d 12% );
+}

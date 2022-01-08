@@ -17,6 +17,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 
@@ -36,6 +38,18 @@ public class HelloController {
 
     @FXML
     private ChoiceBox<String> choiseChapterAddCat;
+
+    @FXML
+    private ChoiceBox<String> choiseEditTable;
+
+    @FXML
+    private DialogPane dialogPaneEditTable;
+
+    @FXML
+    private TextField textEditTableDesc;
+
+    @FXML
+    private TextField textEditTableUrl;
 
     @FXML
     private TextField descriptionField;
@@ -245,6 +259,14 @@ public class HelloController {
         columnDate.setMinWidth(50);
         columnDate.setCellValueFactory(new PropertyValueFactory<>("date"));
         tableMain.getColumns().addAll(columnSomeURL, columnDescription, columnDate);
+//        HBox placeHolder = new HBox();
+//        tableMain.getColumns().forEach(tc->{
+//            StackPane colHolder = new StackPane();
+//            colHolder.getStyleClass().add("table-view-place-holder");
+//            colHolder.prefWidthProperty().bind(tc.widthProperty());
+//            placeHolder.getChildren().add(colHolder);
+//        });
+//        tableMain.setPlaceholder(placeHolder);
 
         //Левый щелчок мыши по TreeMenu
         treeMenu.setOnMouseClicked(mouseEvent -> {
@@ -260,7 +282,7 @@ public class HelloController {
           else if(mouseEvent.getButton()==MouseButton.SECONDARY){
 
 //Контекстное меню -> Изменить
-            contextEditCat.setOnAction(event -> {
+                contextEditCat.setOnAction(event -> {
             dialogPaneEditCat.setVisible(true);
             String buffCat = treeMenu.getSelectionModel().getSelectedItem().getValue();
             String buffChapt = treeMenu.getSelectionModel().getSelectedItem().getParent().getValue();
@@ -280,7 +302,8 @@ public class HelloController {
                     System.out.println("urwellcome");
                     try {
                         System.out.println(dbHandler.takeCatWithCatId(buffCat) + choiseChapterEditCat.getValue());
-                        dbHandler.updateCategoryChapt(dbHandler.takeCatWithCatId(buffCat), choiseChapterEditCat.getValue());
+                        dbHandler.updateCategoryChapt
+                                (dbHandler.takeCatWithCatId(buffCat), choiseChapterEditCat.getValue());
                         System.out.println("Chapt is ok");
                     } catch (SQLException e) {
                         e.printStackTrace();
@@ -321,8 +344,15 @@ public class HelloController {
             });
             }
         });
+        try {
+            choiseEditTable.getItems().addAll(dbHandler.takeCatNameForChoise());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         tableMain.setOnMouseClicked(mouseEvent -> {
-            if(mouseEvent.getButton()==MouseButton.PRIMARY){
+            if(mouseEvent.getButton()==MouseButton.PRIMARY&(tableMain.getSelectionModel().getSelectedItem()!=null)){
                 if(mouseEvent.getClickCount()==2){
                    Application app = new Application() {
                        @Override
@@ -338,11 +368,53 @@ public class HelloController {
                     }
                 }
             }
+
             else if(mouseEvent.getButton()==MouseButton.SECONDARY){
                 contextEditCat.setOnAction(event -> {
-
-                });
+                if(tableMain.getSelectionModel().getSelectedItem()!=null){
+                dialogPaneEditTable.setVisible(true);
+                String buffUrl = tableMain.getSelectionModel().getSelectedItem().getSomeURL();
+                String buffDesc = tableMain.getSelectionModel().getSelectedItem().getDescription();
+                int urlId = tableMain.getSelectionModel().getSelectedItem().getUrlId();
+                int catId = tableMain.getSelectionModel().getSelectedItem().getUrlCat();
+                textEditTableUrl.setText(buffUrl);
+                textEditTableDesc.setText(buffDesc);
+                    try {
+                        choiseEditTable.setValue(dbHandler.takeCatNameWithCatId
+                                (tableMain.getSelectionModel().getSelectedItem().getUrlCat()));
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    dialogPaneEditTable.lookupButton(ButtonType.OK).addEventFilter(ActionEvent.ACTION, event1 -> {
+                        if(!(textEditTableUrl.getText().equals(buffUrl))){
+                            try {
+                                dbHandler.updateTableUrl(urlId, textEditTableUrl.getText());
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        if(!(textEditTableDesc.getText().equals(buffDesc))){
+                            try {
+                                dbHandler.updateTableDescription(urlId, textEditTableDesc.getText());
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        try {
+                            if(!(dbHandler.takeCatNameWithCatId(catId).equals(choiseEditTable.getValue()))){
+                                dbHandler.updateTableCat(urlId, dbHandler.takeCatWithCatId(choiseEditTable.getValue()));
+                            }
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                        dialogPaneEditTable.setVisible(false);
+                    });
+                    dialogPaneEditTable.lookupButton(ButtonType.CLOSE).addEventFilter(ActionEvent.ACTION, event1 -> {
+                        dialogPaneEditTable.setVisible(false);
+                    });
+                }});
                 contextDelCat.setOnAction(event -> {
+                    if(tableMain.getSelectionModel().getSelectedItem()!=null){
                     confirmWindowTable.setVisible(true);
                     confirmWindowTable.lookupButton(ButtonType.YES).addEventFilter(ActionEvent.ACTION, event1 -> {
                         try {
@@ -356,7 +428,7 @@ public class HelloController {
                     confirmWindowTable.lookupButton(ButtonType.NO).addEventFilter(ActionEvent.ACTION, event1 -> {
                         confirmWindowTable.setVisible(false);
                     });
-                });
+                }});
             }
         });
     }

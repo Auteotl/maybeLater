@@ -55,6 +55,19 @@ public class DataHandler extends Configs {
         return catId;
     }
 
+    //Получение имени категории по id
+    public String takeCatNameWithCatId(int id) throws SQLException {
+        String select = "SELECT" + "(\"" + Const.TYPE_CAT + "\")" + " FROM " + Const.CATEGORY_TABLE +
+                " WHERE " + "\"" + Const.ID_CAT + "\" = " + id;
+        String catName = "";
+        PreparedStatement prSt = dbConnection.prepareStatement(select);
+        ResultSet resultSet = prSt.executeQuery();
+        while (resultSet.next()) {
+            catName = resultSet.getString(Const.TYPE_CAT);
+        }
+        return catName;
+    }
+
     //Получение id раздела по имени
     public int takeChaptWithChaptId(String chaptName) throws SQLException {
         String select = "SELECT" + "(\"" + Const.ID_CHAPT + "\")" + " FROM " + "\"" + Const.CHAPTER_TABLE + "\"" +
@@ -96,6 +109,21 @@ public class DataHandler extends Configs {
         }
 
         return catNameForChoise;
+    }
+
+    //Метод для передачи списка категорий в ChoiseBox для Table
+    public ArrayList<String> takeCatNameForChoise(String chapt) throws SQLException, ClassNotFoundException {
+        String select = "SELECT" + "(\"" + Const.TYPE_CAT + "\")" + " FROM " + Const.CATEGORY_TABLE
+                + " WHERE " + "\"" + Const.TYPE_CHAPT + "\" = " + "(\'" + takeChaptId(chapt) + "\')";
+        ArrayList<String> catNameForTable = new ArrayList<>();
+
+        PreparedStatement prSt = getDbConnection().prepareStatement(select);
+        ResultSet resultSet = prSt.executeQuery();
+        while (resultSet.next()) {
+            catNameForTable.add(resultSet.getString(Const.TYPE_CAT));
+        }
+
+        return catNameForTable;
     }
 
     //CHAPTER TABLE
@@ -210,7 +238,8 @@ public class DataHandler extends Configs {
 
     //Обновление значения isVisited
     public void updateIsVisited(int idUrl) throws SQLException {
-        String update = "UPDATE " + "\"" + Const.URLTAB_TABLE + "\"" + "SET " + "\"" + Const.ISVISITED + "\"" + " = " + "\'true\'"
+        String update = "UPDATE " + "\"" + Const.URLTAB_TABLE + "\""
+                + "SET " + "\"" + Const.ISVISITED + "\"" + " = " + "\'true\'"
                 + " WHERE " + "\"" + Const.ID_URL + "\"" + " = " + idUrl;
         PreparedStatement prSt = dbConnection.prepareStatement(update);
         prSt.executeUpdate();
@@ -229,6 +258,32 @@ public class DataHandler extends Configs {
         String update = "UPDATE " + "\"" + Const.CATEGORY_TABLE + "\""
                 + "SET " + "\"" + Const.TYPE_CHAPT + "\"" + " = " + takeChaptId(chaptName)
                 + " WHERE " + "\"" + Const.ID_CAT + "\"" + " = " + idCat;
+        PreparedStatement prSt = dbConnection.prepareStatement(update);
+        prSt.executeUpdate();
+    }
+    //Обновление описания в таблице
+    public void updateTableDescription(int idUrl, String description) throws SQLException {
+        String update = "UPDATE " + "\"" + Const.URLTAB_TABLE + "\""
+                + "SET " + "\"" + Const.DESCRIPTION + "\"" + " = " + "\'" + description + "\'"
+                + " WHERE " + "\"" + Const.ID_URL + "\"" + " = " + idUrl;
+        PreparedStatement prSt = dbConnection.prepareStatement(update);
+        prSt.executeUpdate();
+    }
+
+    //Обновление url в таблице
+    public void updateTableUrl(int idUrl, String url) throws SQLException {
+        String update = "UPDATE " + "\"" + Const.URLTAB_TABLE + "\""
+                + "SET " + "\"" + Const.SOME_URL + "\"" + " = " + "\'" + url + "\'"
+                + " WHERE " + "\"" + Const.ID_URL + "\"" + " = " + idUrl;
+        PreparedStatement prSt = dbConnection.prepareStatement(update);
+        prSt.executeUpdate();
+    }
+
+    //Обновление category в таблице
+    public void updateTableCat(int idUrl, int category) throws SQLException {
+        String update = "UPDATE " + "\"" + Const.URLTAB_TABLE + "\""
+                + "SET " + "\"" + Const.URL_CAT + "\"" + " = " + category
+                + " WHERE " + "\"" + Const.ID_URL + "\"" + " = " + idUrl;
         PreparedStatement prSt = dbConnection.prepareStatement(update);
         prSt.executeUpdate();
     }
