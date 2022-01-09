@@ -45,9 +45,9 @@
                         <TreeView fx:id="treeMenu" prefHeight="547.0" prefWidth="220.0" style="-fx-background-color: #F5F5DC;" />
                      </children>
                   </AnchorPane>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="536.0" prefWidth="698.0" style="-fx-background-color: white;">
+                  <AnchorPane prefHeight="536.0" prefWidth="698.0" style="-fx-background-color: white;">
                      <children>
-                        <TableView  fx:id="tableMain" layoutY="-6.0" prefHeight="558.0" prefWidth="698.0" style="-fx-background-color: #F0F5DC;" stylesheets="@maybeLater.css" />
+                        <TableView fx:id="tableMain" layoutY="-6.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="558.0" prefWidth="698.0" style="-fx-background-color: #F0F5DC; -fx-border-color: #ffffff;" stylesheets="@maybeLater.css" />
                         <DialogPane fx:id="dialogPaneAddCat" layoutX="22.0" layoutY="180.0" prefHeight="214.0" prefWidth="460.0" style="-fx-border-color: grey;" visible="false">
                            <header>
                               <AnchorPane prefHeight="178.0" prefWidth="460.0">

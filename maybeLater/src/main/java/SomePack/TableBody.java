@@ -18,6 +18,10 @@ public class TableBody {
         this.date = "";
         this.isVisited = false;
     }
+
+    public void setVisited(boolean visited) {
+        isVisited = visited;
+    }
     public void setUrlId(int urlId) {
         this.urlId = urlId;
     }
@@ -57,6 +61,9 @@ public class TableBody {
         return date;
     }
 
+    public boolean isVisited() {
+        return isVisited;
+    }
     public TableBody(int urlId, String someURL, String description, int urlCat, String date, boolean isVisited) {
         this.urlId = urlId;
         this.someURL = someURL;
