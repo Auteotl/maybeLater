@@ -112,9 +112,22 @@ public class HelloController {
     private ChoiceBox<String> choiseChapterEditCat;
 
     @FXML
+    private MenuItem contextDelURL;
+
+    @FXML
+    private MenuItem contextEditURL;
+
+    @FXML
     void initialize() throws SQLException, ClassNotFoundException {
         DataHandler dbHandler = new DataHandler();
+        List<TreeItem> listTreeItem = new ArrayList<>();
+        for (int i = 0; i < dbHandler.takeChaptNameForChoise().size(); i++) {
+            listTreeItem.add(new TreeItem<>(dbHandler.takeChaptNameForChoise().get(i)));
+        }
+        for (int i = 0; i < listTreeItem.size(); i++) {
+            System.out.println(listTreeItem.get(i));
 
+        }
 //Добавление строки с URL в БД
         addButton.setOnAction(actionEvent -> {
             try {
@@ -125,7 +138,14 @@ public class HelloController {
             } catch (ClassNotFoundException e) {
                 System.out.println("no no no");
             }
+            urlField.clear();
+            descriptionField.clear();
             categoryChoiseBox.setValue("Выбери категорию: ");
+            ObservableList<TableBody> obsURLList
+                    = FXCollections.observableArrayList(dbHandler.URLListView(
+                    treeMenu.getSelectionModel().getSelectedItem().getValue()));
+            tableMain.setItems(obsURLList);
+
         });
 //Список ChoiseBox категории
         categoryChoiseBox.getItems().addAll(dbHandler.takeCatNameForChoise());
@@ -158,10 +178,14 @@ public class HelloController {
                             errorAddCat.setVisible(false);
                         });
                     } else {
-                        dbHandler.addNewCatInDB(textAddCat.getText().trim(),
+                        String newCat = textAddCat.getText().trim();
+                        dbHandler.addNewCatInDB(newCat,
                                 dbHandler.takeChaptId(choiseChapterAddCat.getValue()));
                         dialogPaneAddCat.setVisible(false);
                         textAddCat.clear();
+                        treeMenu.getRoot().getChildren().get(
+                                dbHandler.takeChaptNameForChoise().indexOf(
+                                        choiseChapterAddCat.getValue())).getChildren().add(new TreeItem<>(newCat));
                     }
                 } else dialogPaneAddCat.setVisible(false);
 
@@ -200,9 +224,10 @@ public class HelloController {
                             errorAddChapt.setVisible(false);
                         });
                     } else {
-                        dbHandler.addNewChaptInDB(textAddChapt.getText().trim());
+                        String newChapt = textAddChapt.getText().trim();
+                        dbHandler.addNewChaptInDB(newChapt);
+                        treeMenu.getRoot().getChildren().add(new TreeItem<>(newChapt));
                         dialogChaptAdd.setVisible(false);
-                        treeMenu.refresh();
                         textAddChapt.clear();
                     }
                 } else dialogChaptAdd.setVisible(false);
@@ -219,28 +244,7 @@ public class HelloController {
         choiseChapterAddCat.setValue("Chapter 1");
         choiseChapterEditCat.getItems().addAll(dbHandler.takeChaptNameForChoise());
 //Дерево
-        List<TreeItem> listTreeItem = new ArrayList<>();
-        for (int i = 0; i < dbHandler.takeChaptNameForChoise().size(); i++) {
-            listTreeItem.add(new TreeItem<String>(dbHandler.takeChaptNameForChoise().get(i)));
-        }
-        TreeItem<String> root = new TreeItem<>("root");
-        root.setExpanded(true);
-        for (int i = 0; i < dbHandler.takeChaptNameForChoise().size(); i++) {
-            root.getChildren().add(listTreeItem.get(i));
-        }
-        for (int i = 0; i < dbHandler.takeChaptNameForChoise().size(); i++) {
-            for (int j = 0; j < dbHandler.takeCatArrayForTree(dbHandler.takeChaptNameForChoise().get(i)).size(); j++) {
-                makeBranch(
-                        dbHandler.takeCatArrayForTree(
-                                dbHandler.takeChaptNameForChoise().get(i)).get(j),
-                        listTreeItem.get(i));
-            }
-
-        }
-
-
-        treeMenu.setRoot(root);
-        treeMenu.setShowRoot(true);
+        makeTree(listTreeItem);
         //Колонки
 
         //url
@@ -282,62 +286,79 @@ public class HelloController {
 
 //Контекстное меню -> Изменить
                 contextEditCat.setOnAction(event -> {
+                    System.out.println("Hi");
                     dialogPaneEditCat.setVisible(true);
                     String buffCat = treeMenu.getSelectionModel().getSelectedItem().getValue();
                     String buffChapt = treeMenu.getSelectionModel().getSelectedItem().getParent().getValue();
                     choiseChapterEditCat.setValue(buffChapt);
                     textEditCat.setText(buffCat);
-                    dialogPaneEditCat.lookupButton(ButtonType.OK).addEventFilter(ActionEvent.ACTION, event1 -> {
-                        if (!(textEditCat.getText().equals(buffCat))) {
-                            try {
-                                dbHandler.updateCategoryName(dbHandler.takeCatWithCatId(buffCat), textEditCat.getText());
-                                System.out.println("Cat is ok");
-                                treeMenu.refresh();
-                            } catch (SQLException e) {
-                                e.printStackTrace();
+                    dialogPaneEditCat.lookupButton(ButtonType.OK).setOnMouseClicked(mouseEvent1 -> {
+                        if (mouseEvent1.getButton().equals(MouseButton.PRIMARY)) {
+                            if (!(textEditCat.getText().equals(buffCat))) {
+                                try {
+                                    dbHandler.updateCategoryName(
+                                            dbHandler.takeCatWithCatId(buffCat), textEditCat.getText());
+                                    treeMenu.getSelectionModel().getSelectedItem().setValue(textEditCat.getText());
+                                    System.out.println("Cat is ok");
+                                    textEditCat.clear();
+                                } catch (SQLException e) {
+                                    e.printStackTrace();
+                                }
+                                System.out.println("Next");
                             }
-                            System.out.println("Next");
-                        }
-                        if (!(choiseChapterEditCat.getValue().equals(buffChapt))) {
-                            System.out.println("urwellcome");
-                            try {
-                                System.out.println(dbHandler.takeCatWithCatId(buffCat) + choiseChapterEditCat.getValue());
-                                dbHandler.updateCategoryChapt
-                                        (dbHandler.takeCatWithCatId(buffCat), choiseChapterEditCat.getValue());
-                                System.out.println("Chapt is ok");
-                                treeMenu.refresh();
-                            } catch (SQLException e) {
-                                e.printStackTrace();
+                            if (!(choiseChapterEditCat.getValue().equals(buffChapt))) {
+                                System.out.println("urwellcome");
+                                try {
+                                    System.out.println(dbHandler.takeCatWithCatId(buffCat)
+                                            + choiseChapterEditCat.getValue());
+                                    dbHandler.updateCategoryChapt
+                                            (dbHandler.takeCatWithCatId(buffCat), choiseChapterEditCat.getValue());
+                                    System.out.println("Chapt is ok");
+                                } catch (SQLException e) {
+                                    e.printStackTrace();
+                                }
                             }
+                            treeMenu.getRoot().getChildren().remove((
+                                    treeMenu.getSelectionModel().getSelectedItem()));
+                            dialogPaneEditCat.setVisible(false);
                         }
-                        dialogPaneEditCat.setVisible(false);
                     });
-                    dialogPaneEditCat.lookupButton(ButtonType.CLOSE).addEventFilter(ActionEvent.ACTION, event1 -> {
-                        dialogPaneEditCat.setVisible(false);
+                    dialogPaneEditCat.lookupButton(ButtonType.CLOSE).setOnMouseClicked(mouseEvent1 -> {
+                        if (mouseEvent1.getButton().equals(MouseButton.PRIMARY)) {
+                            dialogPaneEditCat.setVisible(false);
+                        }
                     });
                 });
 
 //Контекстное меню -> Удалить
                 contextDelCat.setOnAction(event -> {
                     confirmWindow.setVisible(true);
-                    confirmWindow.lookupButton(ButtonType.YES).addEventFilter(ActionEvent.ACTION, event1 -> {
-                        if (treeMenu.getSelectionModel().getSelectedItem().getParent().equals(root)) {
-                            try {
-                                dbHandler.deleteChaptFromDB(treeMenu.getSelectionModel().getSelectedItem().getValue());
-                                confirmWindow.setVisible(false);
-                                treeMenu.refresh();
-                            } catch (SQLException e) {
-                                e.printStackTrace();
+                    confirmWindow.lookupButton(ButtonType.YES).setOnMouseClicked(mouseEvent1 -> {
+                        if (mouseEvent1.getButton().equals(MouseButton.PRIMARY)) {
+                            System.out.println("test");
+                            if (treeMenu.getSelectionModel().getSelectedItem().getParent().getValue().equals("root")) {
+                                System.out.println("test");
+                                try {
+                                    dbHandler.deleteChaptFromDB(treeMenu.getSelectionModel().getSelectedItem().getValue());
+                                    confirmWindow.setVisible(false);
+                                    treeMenu.getRoot().getChildren().remove((
+                                            treeMenu.getSelectionModel().getSelectedItem()));
+                                } catch (SQLException e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                System.out.println("here");
+                                try {
+                                    dbHandler.deleteCatFromDB(treeMenu.getSelectionModel().getSelectedItem().getValue());
+                                    confirmWindow.setVisible(false);
+                                    treeMenu.getSelectionModel().getSelectedItem().getParent().getChildren().remove(
+                                            treeMenu.getSelectionModel().getSelectedItem());
+                                } catch (SQLException e) {
+                                    System.out.println("Loooooser");
+                                    e.printStackTrace();
+                                }
                             }
-                        } else {
-                            try {
-                                dbHandler.deleteCatFromDB(treeMenu.getSelectionModel().getSelectedItem().getValue());
-                                treeMenu.refresh();
-                                confirmWindow.setVisible(false);
-                            } catch (SQLException e) {
-                                System.out.println("Loooooser");
-                                e.printStackTrace();
-                            }
+
                         }
                     });
                     confirmWindow.lookupButton(ButtonType.NO).addEventFilter(ActionEvent.ACTION, event1 -> {
@@ -354,7 +375,8 @@ public class HelloController {
             e.printStackTrace();
         }
         tableMain.setOnMouseClicked(mouseEvent -> {
-            if (mouseEvent.getButton() == MouseButton.PRIMARY & (tableMain.getSelectionModel().getSelectedItem() != null)) {
+            if (mouseEvent.getButton() == MouseButton.PRIMARY & (
+                    tableMain.getSelectionModel().getSelectedItem() != null)) {
                 if (mouseEvent.getClickCount() == 2) {
                     Application app = new Application() {
                         @Override
@@ -369,8 +391,10 @@ public class HelloController {
                         e.printStackTrace();
                     }
                 }
+
+//Изменение и удаление tableMain
             } else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
-                contextEditCat.setOnAction(event -> {
+                contextEditURL.setOnAction(event -> {
                     if (tableMain.getSelectionModel().getSelectedItem() != null) {
                         dialogPaneEditTable.setVisible(true);
                         String buffUrl = tableMain.getSelectionModel().getSelectedItem().getSomeURL();
@@ -385,55 +409,77 @@ public class HelloController {
                         } catch (SQLException e) {
                             e.printStackTrace();
                         }
-                        dialogPaneEditTable.lookupButton(ButtonType.OK).addEventFilter(ActionEvent.ACTION, event1 -> {
-                            if (!(textEditTableUrl.getText().equals(buffUrl))) {
+                        dialogPaneEditTable.lookupButton(ButtonType.OK).setOnMouseClicked(mouseEvent1 -> {
+                            if (mouseEvent1.getButton().equals(MouseButton.PRIMARY)) {
+                                if (!(textEditTableUrl.getText().equals(buffUrl))) {
+                                    try {
+                                        dbHandler.updateTableUrl(urlId, textEditTableUrl.getText());
+                                    } catch (SQLException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                if (!(textEditTableDesc.getText().equals(buffDesc))) {
+                                    try {
+                                        dbHandler.updateTableDescription(urlId, textEditTableDesc.getText());
+                                    } catch (SQLException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
                                 try {
-                                    dbHandler.updateTableUrl(urlId, textEditTableUrl.getText());
+                                    if (!(dbHandler.takeCatNameWithCatId(catId).equals(choiseEditTable.getValue()))) {
+                                        dbHandler.updateTableCat(
+                                                urlId, dbHandler.takeCatWithCatId(choiseEditTable.getValue()));
+                                    }
                                 } catch (SQLException e) {
                                     e.printStackTrace();
                                 }
-                            }
-                            if (!(textEditTableDesc.getText().equals(buffDesc))) {
-                                try {
-                                    dbHandler.updateTableDescription(urlId, textEditTableDesc.getText());
-                                } catch (SQLException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                            try {
-                                if (!(dbHandler.takeCatNameWithCatId(catId).equals(choiseEditTable.getValue()))) {
-                                    dbHandler.updateTableCat(urlId, dbHandler.takeCatWithCatId(choiseEditTable.getValue()));
-                                }
-                            } catch (SQLException e) {
-                                e.printStackTrace();
-                            }
 
-                            ObservableList<TableBody> obsURLList
-                                    = FXCollections.observableArrayList(dbHandler.URLListView(treeMenu.getSelectionModel().getSelectedItem().getValue()));
-                            tableMain.setItems(obsURLList);
+                                ObservableList<TableBody> obsURLList
+                                        = FXCollections.observableArrayList(dbHandler.URLListView(
+                                        treeMenu.getSelectionModel().getSelectedItem().getValue()));
+                                tableMain.setItems(obsURLList);
 
-                            dialogPaneEditTable.setVisible(false);
+                                dialogPaneEditTable.setVisible(false);
+                            }
                         });
-                        dialogPaneEditTable.lookupButton(ButtonType.CLOSE).addEventFilter(ActionEvent.ACTION, event1 -> {
-                            dialogPaneEditTable.setVisible(false);
+                        dialogPaneEditTable.lookupButton(ButtonType.CLOSE).setOnMouseClicked(mouseEvent1 -> {
+                            if (mouseEvent1.getButton().equals(MouseButton.PRIMARY)) {
+                                dialogPaneEditTable.setVisible(false);
+                            }
                         });
                     }
-                    tableMain.refresh();
                 });
-                contextDelCat.setOnAction(event -> {
+                contextDelURL.setOnAction(event -> {
                     if (tableMain.getSelectionModel().getSelectedItem() != null) {
+                        System.out.println("нет");
                         confirmWindowTable.setVisible(true);
-                        confirmWindowTable.lookupButton(ButtonType.YES).addEventFilter(ActionEvent.ACTION, event1 -> {
-                            try {
-                                dbHandler.deleteStringFromDB(tableMain.getSelectionModel().getSelectedItem().getUrlId());
-                                confirmWindowTable.setVisible(false);
-                            } catch (SQLException e) {
-                                System.out.println("Ha ha ha");
-                                e.printStackTrace();
+                        confirmWindowTable.lookupButton(ButtonType.YES).setOnMouseClicked(mouseEvent1 -> {
+                            if (mouseEvent1.getButton().equals(MouseButton.PRIMARY)) {
+                                System.out.println("Экшн");
+                                try {
+                                    dbHandler.deleteStringFromDB(
+                                            tableMain.getSelectionModel().getSelectedItem().getUrlId());
+                                    confirmWindowTable.setVisible(false);
+                                    for (int i = 0; i < tableMain.getItems().size(); i++) {
+                                        System.out.println(tableMain.getItems().get(i));
+                                    }
+                                    System.out.println(1);
+                                    tableMain.getItems().remove(tableMain.getSelectionModel().getSelectedItem());
+                                    for (int i = 0; i < tableMain.getItems().size(); i++) {
+                                        System.out.println(tableMain.getItems().get(i));
+                                    }
+                                    System.out.println(2);
+
+                                } catch (SQLException e) {
+                                    System.out.println("Ha ha ha");
+                                    e.printStackTrace();
+                                }
+
                             }
                         });
-                        confirmWindowTable.lookupButton(ButtonType.NO).addEventFilter(ActionEvent.ACTION, event1 -> {
-                            confirmWindowTable.setVisible(false);
+                        confirmWindowTable.lookupButton(ButtonType.NO).setOnMouseClicked(mouseEvent1 -> {
+                            if (mouseEvent1.getButton().equals(MouseButton.PRIMARY))
+                                confirmWindowTable.setVisible(false);
                         });
                     }
                 });
@@ -447,5 +493,25 @@ public class HelloController {
         item.setExpanded(true);
         parent.getChildren().add(item);
         return item;
+    }
+
+    public void makeTree(List<TreeItem> listTreeItem) throws SQLException, ClassNotFoundException {
+        DataHandler dbHandler = new DataHandler();
+
+        TreeItem<String> root = new TreeItem<>("root");
+        root.setExpanded(true);
+        for (int i = 0; i < dbHandler.takeChaptNameForChoise().size(); i++) {
+            root.getChildren().add(listTreeItem.get(i));
+        }
+        for (int i = 0; i < dbHandler.takeChaptNameForChoise().size(); i++) {
+            for (int j = 0; j < dbHandler.takeCatArrayForTree(dbHandler.takeChaptNameForChoise().get(i)).size(); j++) {
+                makeBranch(
+                        dbHandler.takeCatArrayForTree(
+                                dbHandler.takeChaptNameForChoise().get(i)).get(j),
+                        listTreeItem.get(i));
+            }
+        }
+        treeMenu.setRoot(root);
+        treeMenu.setShowRoot(true);
     }
 }

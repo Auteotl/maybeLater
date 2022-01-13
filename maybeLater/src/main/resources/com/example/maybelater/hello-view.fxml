@@ -42,12 +42,28 @@
                <items>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="579.0" prefWidth="210.0">
                      <children>
-                        <TreeView fx:id="treeMenu" prefHeight="547.0" prefWidth="220.0" style="-fx-background-color: #F5F5DC;" />
+                        <TreeView fx:id="treeMenu" prefHeight="547.0" prefWidth="220.0" style="-fx-background-color: #F5F5DC;">
+                           <contextMenu>
+                              <ContextMenu fx:id="contextMenuTreeView">
+                                <items>
+                                  <MenuItem fx:id="contextEditCat" mnemonicParsing="false" text="Изменить" />
+                                    <MenuItem fx:id="contextDelCat" mnemonicParsing="false" text="Удалить" />
+                                </items>
+                              </ContextMenu>
+                           </contextMenu></TreeView>
                      </children>
                   </AnchorPane>
                   <AnchorPane prefHeight="536.0" prefWidth="698.0" style="-fx-background-color: white;">
                      <children>
-                        <TableView fx:id="tableMain" layoutY="-6.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="558.0" prefWidth="698.0" style="-fx-background-color: #F0F5DC; -fx-border-color: #ffffff;" stylesheets="@maybeLater.css" />
+                        <TableView fx:id="tableMain" layoutY="-6.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="558.0" prefWidth="698.0" style="-fx-background-color: #F0F5DC; -fx-border-color: #ffffff;" stylesheets="@maybeLater.css">
+                           <contextMenu>
+                              <ContextMenu fx:id="contextTableView">
+                                <items>
+                                    <MenuItem fx:id="contextEditURL" mnemonicParsing="false" text="Изменить" />
+                                  <MenuItem fx:id="contextDelURL" mnemonicParsing="false" text="Удалить" />
+                                </items>
+                              </ContextMenu>
+                           </contextMenu></TableView>
                         <DialogPane fx:id="dialogPaneAddCat" layoutX="22.0" layoutY="180.0" prefHeight="214.0" prefWidth="460.0" style="-fx-border-color: grey;" visible="false">
                            <header>
                               <AnchorPane prefHeight="178.0" prefWidth="460.0">
@@ -233,14 +249,6 @@
                      </children>
                   </AnchorPane>
                </items>
-               <contextMenu>
-                  <ContextMenu fx:id="contextMenuTreeView">
-                    <items>
-                      <MenuItem fx:id="contextEditCat" mnemonicParsing="false" text="Изменить" />
-                        <MenuItem fx:id="contextDelCat" mnemonicParsing="false" text="Удалить" />
-                    </items>
-                  </ContextMenu>
-               </contextMenu>
             </SplitPane>
             <AnchorPane layoutX="-1.0" layoutY="548.0" minHeight="0.0" minWidth="0.0" prefHeight="55.0" prefWidth="926.0" style="-fx-background-color: #F5F5DC;">
                <children>
