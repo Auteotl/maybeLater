@@ -253,6 +253,15 @@ public class DataHandler extends Configs {
         PreparedStatement prSt = dbConnection.prepareStatement(update);
         prSt.executeUpdate();
     }
+
+    //Обновление названия раздела
+    public void updateChaptName(String chaptName, String newChaptName) throws SQLException{
+        String update = "UPDATE " + "\"" + Const.CHAPTER_TABLE + "\"" +
+                "SET " + "\"" + Const.CHAPT_TEXT + "\"" + " = " + "\'" + newChaptName + "\'"
+                + " WHERE " + "\"" + Const.ID_CHAPT + "\"" + " = " + takeChaptWithChaptId(chaptName);
+        PreparedStatement prSt = dbConnection.prepareStatement(update);
+        prSt.executeUpdate();
+    }
     //Обновление раздела категории
     public void updateCategoryChapt(int idCat, String chaptName) throws SQLException {
         String update = "UPDATE " + "\"" + Const.CATEGORY_TABLE + "\""

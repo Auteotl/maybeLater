@@ -118,16 +118,17 @@ public class HelloController {
     private MenuItem contextEditURL;
 
     @FXML
+    private Label labelForChoiseEditCat;
+
+    @FXML
     void initialize() throws SQLException, ClassNotFoundException {
         DataHandler dbHandler = new DataHandler();
         List<TreeItem> listTreeItem = new ArrayList<>();
         for (int i = 0; i < dbHandler.takeChaptNameForChoise().size(); i++) {
             listTreeItem.add(new TreeItem<>(dbHandler.takeChaptNameForChoise().get(i)));
         }
-        for (int i = 0; i < listTreeItem.size(); i++) {
-            System.out.println(listTreeItem.get(i));
+        createChoiseForAdd();
 
-        }
 //Добавление строки с URL в БД
         addButton.setOnAction(actionEvent -> {
             try {
@@ -140,16 +141,14 @@ public class HelloController {
             }
             urlField.clear();
             descriptionField.clear();
-            categoryChoiseBox.setValue("Выбери категорию: ");
+            categoryChoiseBox.setValue("Без категории: ");
             ObservableList<TableBody> obsURLList
                     = FXCollections.observableArrayList(dbHandler.URLListView(
                     treeMenu.getSelectionModel().getSelectedItem().getValue()));
             tableMain.setItems(obsURLList);
 
         });
-//Список ChoiseBox категории
-        categoryChoiseBox.getItems().addAll(dbHandler.takeCatNameForChoise());
-        categoryChoiseBox.setValue("Без категории: ");
+
 
 //Окно "Добавить категорию"
 
@@ -186,6 +185,7 @@ public class HelloController {
                         treeMenu.getRoot().getChildren().get(
                                 dbHandler.takeChaptNameForChoise().indexOf(
                                         choiseChapterAddCat.getValue())).getChildren().add(new TreeItem<>(newCat));
+                        categoryChoiseBox.getItems().add(newCat);
                     }
                 } else dialogPaneAddCat.setVisible(false);
 
@@ -227,6 +227,8 @@ public class HelloController {
                         String newChapt = textAddChapt.getText().trim();
                         dbHandler.addNewChaptInDB(newChapt);
                         treeMenu.getRoot().getChildren().add(new TreeItem<>(newChapt));
+                        choiseChapterAddCat.getItems().add(newChapt);
+                        choiseChapterEditCat.getItems().add(newChapt);
                         dialogChaptAdd.setVisible(false);
                         textAddChapt.clear();
                     }
@@ -241,7 +243,7 @@ public class HelloController {
 
 //ChoiseBox для раздела
         choiseChapterAddCat.getItems().addAll(dbHandler.takeChaptNameForChoise());
-        choiseChapterAddCat.setValue("Chapter 1");
+        choiseChapterAddCat.setValue(dbHandler.takeChaptNameForChoise().get(0));
         choiseChapterEditCat.getItems().addAll(dbHandler.takeChaptNameForChoise());
 //Дерево
         makeTree(listTreeItem);
@@ -287,6 +289,10 @@ public class HelloController {
 //Контекстное меню -> Изменить
                 contextEditCat.setOnAction(event -> {
                     System.out.println("Hi");
+                    if(treeMenu.getSelectionModel().getSelectedItem().getParent().getValue().equals("root")){
+                        choiseChapterEditCat.setVisible(false);
+                        labelForChoiseEditCat.setVisible(false);
+                    }
                     dialogPaneEditCat.setVisible(true);
                     String buffCat = treeMenu.getSelectionModel().getSelectedItem().getValue();
                     String buffChapt = treeMenu.getSelectionModel().getSelectedItem().getParent().getValue();
@@ -294,35 +300,69 @@ public class HelloController {
                     textEditCat.setText(buffCat);
                     dialogPaneEditCat.lookupButton(ButtonType.OK).setOnMouseClicked(mouseEvent1 -> {
                         if (mouseEvent1.getButton().equals(MouseButton.PRIMARY)) {
+                        if(treeMenu.getSelectionModel().getSelectedItem().getParent().getValue().equals("root")){
                             if (!(textEditCat.getText().equals(buffCat))) {
                                 try {
-                                    dbHandler.updateCategoryName(
-                                            dbHandler.takeCatWithCatId(buffCat), textEditCat.getText());
-                                    treeMenu.getSelectionModel().getSelectedItem().setValue(textEditCat.getText());
-                                    System.out.println("Cat is ok");
-                                    textEditCat.clear();
+                                    dbHandler.updateChaptName(buffCat, textEditCat.getText().trim());
+                                    System.out.println(choiseChapterAddCat.getItems().indexOf(buffCat));
                                 } catch (SQLException e) {
                                     e.printStackTrace();
                                 }
-                                System.out.println("Next");
+                                choiseChapterAddCat.getItems().set(
+                                        choiseChapterAddCat.getItems().indexOf(buffCat),textEditCat.getText().trim());
+                                choiseChapterEditCat.getItems().set(
+                                        choiseChapterEditCat.getItems().indexOf(buffCat),textEditCat.getText().trim());
+                                treeMenu.getSelectionModel().getSelectedItem().setValue(textEditCat.getText().trim());
+                                textEditCat.clear();
+                                contextEditCat.setVisible(true);
+                                labelForChoiseEditCat.setVisible(true);
+                                dialogPaneEditCat.setVisible(false);
+
                             }
-                            if (!(choiseChapterEditCat.getValue().equals(buffChapt))) {
-                                System.out.println("urwellcome");
-                                try {
-                                    System.out.println(dbHandler.takeCatWithCatId(buffCat)
-                                            + choiseChapterEditCat.getValue());
-                                    dbHandler.updateCategoryChapt
-                                            (dbHandler.takeCatWithCatId(buffCat), choiseChapterEditCat.getValue());
-                                    System.out.println("Chapt is ok");
-                                } catch (SQLException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                            treeMenu.getRoot().getChildren().remove((
-                                    treeMenu.getSelectionModel().getSelectedItem()));
-                            dialogPaneEditCat.setVisible(false);
                         }
-                    });
+                        else {
+                                if (!(textEditCat.getText().equals(buffCat))) {
+                                    try {
+                                        dbHandler.updateCategoryName(
+                                                dbHandler.takeCatWithCatId(buffCat), textEditCat.getText());
+                                        treeMenu.getSelectionModel().getSelectedItem().setValue(textEditCat.getText().trim());
+
+                                        int indexOldCat = categoryChoiseBox.getItems().indexOf(buffCat);
+                                        categoryChoiseBox.getItems().set(indexOldCat, textEditCat.getText().trim());
+                                        System.out.println("Cat is ok");
+                                        textEditCat.clear();
+                                    } catch (SQLException e) {
+                                        e.printStackTrace();
+                                    }
+                                    System.out.println("Next");
+                                }
+                                if (!(choiseChapterEditCat.getValue().equals(buffChapt))) {
+                                    System.out.println("urwellcome");
+                                    try {
+                                        dbHandler.updateCategoryChapt
+                                                (dbHandler.takeCatWithCatId(buffCat), choiseChapterEditCat.getValue());
+                                        System.out.println("Chapt is ok");
+
+                                    } catch (SQLException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                TreeItem<String> test1 = treeMenu.getSelectionModel().getSelectedItem();
+                                if (test1 != null) {
+                                    TreeItem<String> test2 = test1.getParent();
+                                    if (test2 != null) {
+                                        test2.getChildren().removeAll(test1);
+                                        for (int i = 0; i < treeMenu.getRoot().getChildren().size(); i++) {
+                                            if (treeMenu.getRoot().getChildren().get(i).getValue().equals(
+                                                    choiseChapterEditCat.getValue())) {
+                                                treeMenu.getRoot().getChildren().get(i).getChildren().add(test1);
+                                            }
+                                        }
+                                    }
+                                }
+                        }
+                            dialogPaneEditCat.setVisible(false);
+                        }});
                     dialogPaneEditCat.lookupButton(ButtonType.CLOSE).setOnMouseClicked(mouseEvent1 -> {
                         if (mouseEvent1.getButton().equals(MouseButton.PRIMARY)) {
                             dialogPaneEditCat.setVisible(false);
@@ -334,25 +374,29 @@ public class HelloController {
                 contextDelCat.setOnAction(event -> {
                     confirmWindow.setVisible(true);
                     confirmWindow.lookupButton(ButtonType.YES).setOnMouseClicked(mouseEvent1 -> {
+                        String selection = treeMenu.getSelectionModel().getSelectedItem().getValue();
                         if (mouseEvent1.getButton().equals(MouseButton.PRIMARY)) {
-                            System.out.println("test");
                             if (treeMenu.getSelectionModel().getSelectedItem().getParent().getValue().equals("root")) {
-                                System.out.println("test");
                                 try {
-                                    dbHandler.deleteChaptFromDB(treeMenu.getSelectionModel().getSelectedItem().getValue());
+                                    dbHandler.deleteChaptFromDB(
+                                            selection);
                                     confirmWindow.setVisible(false);
                                     treeMenu.getRoot().getChildren().remove((
                                             treeMenu.getSelectionModel().getSelectedItem()));
+                                    choiseChapterAddCat.getItems().remove(selection);
+                                    choiseChapterEditCat.getItems().remove(selection);
                                 } catch (SQLException e) {
                                     e.printStackTrace();
                                 }
                             } else {
-                                System.out.println("here");
                                 try {
-                                    dbHandler.deleteCatFromDB(treeMenu.getSelectionModel().getSelectedItem().getValue());
+                                    dbHandler.deleteCatFromDB(
+                                            selection);
                                     confirmWindow.setVisible(false);
                                     treeMenu.getSelectionModel().getSelectedItem().getParent().getChildren().remove(
                                             treeMenu.getSelectionModel().getSelectedItem());
+                                    categoryChoiseBox.getItems().remove(
+                                            selection);
                                 } catch (SQLException e) {
                                     System.out.println("Loooooser");
                                     e.printStackTrace();
@@ -487,6 +531,12 @@ public class HelloController {
         });
     }
 
+    public void createChoiseForAdd() throws SQLException, ClassNotFoundException {
+        DataHandler dbHandler = new DataHandler();
+        categoryChoiseBox.getItems().addAll(dbHandler.takeCatNameForChoise());
+        categoryChoiseBox.setValue("Без категории: ");
+    }
+
     //Ветка дерева
     public TreeItem<String> makeBranch(String title, TreeItem<String> parent) {
         TreeItem<String> item = new TreeItem<>(title);
@@ -494,6 +544,7 @@ public class HelloController {
         parent.getChildren().add(item);
         return item;
     }
+
 
     public void makeTree(List<TreeItem> listTreeItem) throws SQLException, ClassNotFoundException {
         DataHandler dbHandler = new DataHandler();

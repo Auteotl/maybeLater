@@ -202,7 +202,7 @@
                                           <Font size="18.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="13.0" layoutY="96.0" prefHeight="25.0" prefWidth="338.0" text="Укажите раздел:">
+                                    <Label fx:id="labelForChoiseEditCat" layoutX="13.0" layoutY="96.0" prefHeight="25.0" prefWidth="338.0" text="Укажите раздел:">
                                        <font>
                                           <Font size="18.0" />
                                        </font>
