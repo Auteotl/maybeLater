@@ -1,0 +1,20 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="maybeLater:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/maybeLater_jar</output-path>
+    <root id="archive" name="maybeLater.jar">
+      <element id="module-output" name="maybeLater" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-fxml/17.0.0.1/javafx-fxml-17.0.0.1-win.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-controls/17.0.0.1/javafx-controls-17.0.0.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-graphics/17.0.0.1/javafx-graphics-17.0.0.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-controls/17.0.0.1/javafx-controls-17.0.0.1-win.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/postgresql/postgresql/42.3.1/postgresql-42.3.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../SomePack/postgresql-42.3.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/sidnan/NamedParameterPreparedStatement/0.1/NamedParameterPreparedStatement-0.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/checkerframework/checker-qual/3.5.0/checker-qual-3.5.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-base/17.0.0.1/javafx-base-17.0.0.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-graphics/17.0.0.1/javafx-graphics-17.0.0.1-win.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-fxml/17.0.0.1/javafx-fxml-17.0.0.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-base/17.0.0.1/javafx-base-17.0.0.1-win.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

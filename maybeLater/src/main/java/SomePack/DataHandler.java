@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import java.sql.*;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Properties;
 import java.time.LocalDate;
 
@@ -139,6 +140,19 @@ public class DataHandler extends Configs {
         return chaptId;
     }
 
+    //SELECT isVisited
+    public boolean selectIsVisited(int id) throws SQLException, ClassNotFoundException {
+        String select = "SELECT" + "(\"" + Const.IS_VISITED + "\")" + " FROM " + "\"" +Const.URLTAB_TABLE+ "\""
+                + " WHERE " + "\"" + Const.ID_URL + "\" = " + id;
+        boolean flag = false;
+        PreparedStatement prSt = getDbConnection().prepareStatement(select);
+        ResultSet resultSet = prSt.executeQuery();
+        if (resultSet.next()) {
+            flag = resultSet.getBoolean(Const.IS_VISITED);
+        }
+        return flag;
+    }
+
     //Добавление нового раздела
     public void addNewChaptInDB(String chaptName) throws SQLException, ClassNotFoundException {
         String insert = "INSERT INTO " + Const.CHAPTER_TABLE + "(\"" + Const.CHAPT_TEXT + "\")" +
@@ -164,7 +178,7 @@ public class DataHandler extends Configs {
         while (resultSet.next()) {
             chaptNameForChoise.add(resultSet.getString(Const.CHAPT_TEXT));
         }
-
+        Collections.sort(chaptNameForChoise);
         return chaptNameForChoise;
     }
 
@@ -178,6 +192,7 @@ public class DataHandler extends Configs {
         while (resultSet.next()) {
             catArrayForTree.add(resultSet.getString(Const.TYPE_CAT));
         }
+        Collections.sort(catArrayForTree);
         return catArrayForTree;
     }
 
@@ -239,7 +254,7 @@ public class DataHandler extends Configs {
     //Обновление значения isVisited
     public void updateIsVisited(int idUrl) throws SQLException {
         String update = "UPDATE " + "\"" + Const.URLTAB_TABLE + "\""
-                + "SET " + "\"" + Const.ISVISITED + "\"" + " = " + "\'true\'"
+                + "SET " + "\"" + Const.IS_VISITED + "\"" + " = " + "\'true\'"
                 + " WHERE " + "\"" + Const.ID_URL + "\"" + " = " + idUrl;
         PreparedStatement prSt = dbConnection.prepareStatement(update);
         prSt.executeUpdate();

@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ButtonType?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.ContextMenu?>
 <?import javafx.scene.control.DialogPane?>
@@ -64,9 +65,13 @@
                                 </items>
                               </ContextMenu>
                            </contextMenu></TableView>
-                        <DialogPane fx:id="dialogPaneAddCat" layoutX="22.0" layoutY="180.0" prefHeight="214.0" prefWidth="460.0" style="-fx-border-color: grey;" visible="false">
-                           <header>
-                              <AnchorPane prefHeight="178.0" prefWidth="460.0">
+                        <DialogPane fx:id="dialogPaneAddCat" layoutX="22.0" layoutY="180.0" prefHeight="259.0" prefWidth="460.0" style="-fx-background-color: white; -fx-border-color: #808080;" visible="false">
+                           <buttonTypes>
+                              <ButtonType fx:constant="OK" />
+                              <ButtonType fx:constant="CLOSE" />
+                           </buttonTypes>
+                           <content>
+                              <AnchorPane prefHeight="151.0" prefWidth="458.0" style="-fx-background-color: white;">
                                  <children>
                                     <TextField fx:id="textAddCat" layoutX="10.0" layoutY="44.0" prefHeight="32.0" prefWidth="342.0" />
                                     <Label layoutX="10.0" layoutY="14.0" text="Введите название категории: ">
@@ -82,13 +87,19 @@
                                     <ChoiceBox fx:id="choiseChapterAddCat" layoutX="12.0" layoutY="127.0" prefHeight="25.0" prefWidth="338.0" />
                                  </children>
                               </AnchorPane>
+                           </content>
+                           <header>
+                              <AnchorPane prefHeight="47.0" prefWidth="458.0" style="-fx-background-color: #DCDCDC;">
+                                 <children>
+                                    <Label layoutX="14.0" layoutY="10.0" text="Добавить категорию">
+                                       <font>
+                                          <Font name="System Italic" size="18.0" />
+                                       </font>
+                                    </Label>
+                                 </children></AnchorPane>
                            </header>
-                           <buttonTypes>
-                              <ButtonType fx:constant="OK" />
-                              <ButtonType fx:constant="CLOSE" />
-                           </buttonTypes>
                         </DialogPane>
-                        <DialogPane fx:id="dialogChaptAdd" layoutX="40.0" layoutY="203.0" prefHeight="111.0" prefWidth="377.0" visible="false">
+                        <DialogPane fx:id="dialogChaptAdd" layoutX="40.0" layoutY="203.0" prefHeight="111.0" prefWidth="377.0" style="-fx-background-color: white;" visible="false">
                            <header>
                               <AnchorPane prefHeight="73.0" prefWidth="860.0">
                                  <children>
@@ -110,18 +121,13 @@
                               <ButtonType fx:constant="CLOSE" />
                            </buttonTypes>
                         </DialogPane>
-                        <DialogPane fx:id="errorAddCat" layoutX="36.0" layoutY="211.0" prefHeight="114.0" prefWidth="431.0" style="-fx-border-color: black;" visible="false">
+                        <DialogPane fx:id="errorAddCat" layoutX="36.0" layoutY="220.0" prefHeight="161.0" prefWidth="440.0" style="-fx-border-color: black; -fx-background-color: white;" visible="false">
                            <buttonTypes>
                               <ButtonType fx:constant="OK" />
                            </buttonTypes>
                            <content>
-                              <AnchorPane prefHeight="72.0" prefWidth="3182.0">
+                              <AnchorPane prefHeight="84.0" prefWidth="438.0">
                                  <children>
-                                    <Label alignment="CENTER" layoutX="106.0" layoutY="1.0" prefHeight="27.0" prefWidth="220.0" text="Ошибка!">
-                                       <font>
-                                          <Font size="18.0" />
-                                       </font>
-                                    </Label>
                                     <Label layoutX="26.0" layoutY="36.0" prefHeight="39.0" prefWidth="392.0" text="Категория с таким названием уже существует">
                                        <font>
                                           <Font size="18.0" />
@@ -130,19 +136,25 @@
                                  </children>
                               </AnchorPane>
                            </content>
+                           <header>
+                              <AnchorPane prefHeight="43.0" prefWidth="438.0" style="-fx-background-color: #DCDCDC;">
+                                 <children>
+                                    <Label alignment="CENTER" layoutX="102.0" layoutY="8.0" prefHeight="27.0" prefWidth="220.0" text="Ошибка!">
+                                       <font>
+                                          <Font name="System Bold" size="20.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </AnchorPane>
+                           </header>
                         </DialogPane>
-                        <DialogPane fx:id="errorAddChapt" layoutX="46.0" layoutY="221.0" prefHeight="114.0" prefWidth="431.0" style="-fx-border-color: black;" visible="false">
+                        <DialogPane fx:id="errorAddChapt" layoutX="46.0" layoutY="221.0" prefHeight="114.0" prefWidth="431.0" style="-fx-border-color: black; -fx-background-color: white;" visible="false">
                            <buttonTypes>
                               <ButtonType fx:constant="OK" />
                            </buttonTypes>
                            <content>
-                              <AnchorPane prefHeight="72.0" prefWidth="3182.0">
+                              <AnchorPane prefHeight="72.0" prefWidth="3182.0" style="-fx-background-color: white;">
                                  <children>
-                                    <Label alignment="CENTER" layoutX="106.0" layoutY="1.0" prefHeight="27.0" prefWidth="220.0" text="Ошибка!">
-                                       <font>
-                                          <Font size="18.0" />
-                                       </font>
-                                    </Label>
                                     <Label layoutX="38.0" layoutY="34.0" prefHeight="39.0" prefWidth="369.0" text="Раздел с таким названием уже существует">
                                        <font>
                                           <Font size="18.0" />
@@ -151,26 +163,50 @@
                                  </children>
                               </AnchorPane>
                            </content>
-                        </DialogPane>
-                        <DialogPane fx:id="confirmWindow" layoutX="3.0" layoutY="163.0" maxHeight="110.0" maxWidth="550.0" minHeight="110.0" minWidth="550.0" prefHeight="110.0" prefWidth="550.0" visible="false">
                            <header>
-                              <Label fx:id="labelConfirmWindow" prefHeight="35.0" prefWidth="292.0" text="Вы действительно хотите удалить раздел?">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                              </Label>
+                              <AnchorPane prefHeight="43.0" prefWidth="438.0" style="-fx-background-color: #DCDCDC;">
+                                 <children>
+                                    <Label alignment="CENTER" layoutX="102.0" layoutY="8.0" prefHeight="27.0" prefWidth="220.0" text="Ошибка!">
+                                       <font>
+                                          <Font name="System Bold" size="20.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </AnchorPane>
                            </header>
-                           <content>
-                              <Text fx:id="textConfirmWindow" strokeType="OUTSIDE" strokeWidth="0.0" text="Это приведет к удалению всех записей в разделе" wrappingWidth="431.49853515625">
-                                 <font>
-                                    <Font size="19.0" />
-                                 </font>
-                              </Text>
-                           </content>
+                        </DialogPane>
+                        <DialogPane fx:id="confirmWindow" layoutX="3.0" layoutY="163.0" maxHeight="150.0" maxWidth="550.0" minHeight="150.0" minWidth="550.0" prefHeight="150.0" prefWidth="550.0" style="-fx-background-color: white; -fx-border-color: black;" visible="false">
                            <buttonTypes>
                               <ButtonType fx:constant="YES" />
                               <ButtonType fx:constant="NO" />
                            </buttonTypes>
+                           <header>
+                              <AnchorPane prefHeight="35.0" prefWidth="550.0" style="-fx-background-color: #DCDCDC;">
+                                 <children>
+                                    <Label fx:id="labelConfirmWindow" layoutX="165.0" prefHeight="35.0" prefWidth="220.0" text="Удаление категории" textFill="#111111">
+                                       <font>
+                                          <Font name="System Bold" size="20.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </AnchorPane>
+                           </header>
+                           <content>
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                 <children>
+                                    <Text fx:id="textConfirmWindow" layoutX="44.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Уверены, что хотите удалить выбранную  категорию?" wrappingWidth="479.0">
+                                       <font>
+                                          <Font size="19.0" />
+                                       </font>
+                                    </Text>
+                                    <CheckBox fx:id="checkBox" layoutX="23.0" layoutY="48.0" mnemonicParsing="false" text="Перенести категории в главный раздел" textFill="#111010">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </CheckBox>
+                                 </children>
+                              </AnchorPane>
+                           </content>
                         </DialogPane>
                         <DialogPane fx:id="confirmWindowTable" layoutX="13.0" layoutY="173.0" maxHeight="110.0" maxWidth="550.0" minHeight="110.0" minWidth="550.0" prefHeight="110.0" prefWidth="550.0" visible="false">
                            <header>
@@ -192,12 +228,16 @@
                               <ButtonType fx:constant="NO" />
                            </buttonTypes>
                         </DialogPane>
-                        <DialogPane fx:id="dialogPaneEditCat" layoutX="32.0" layoutY="190.0" prefHeight="214.0" prefWidth="460.0" style="-fx-border-color: grey;" visible="false">
-                           <header>
-                              <AnchorPane prefHeight="178.0" prefWidth="460.0">
+                        <DialogPane fx:id="dialogPaneEditCat" layoutX="32.0" layoutY="190.0" prefHeight="214.0" prefWidth="460.0" style="-fx-border-color: black; -fx-background-color: white;" visible="false">
+                           <buttonTypes>
+                              <ButtonType fx:constant="OK" />
+                              <ButtonType fx:constant="CLOSE" />
+                           </buttonTypes>
+                           <content>
+                              <AnchorPane prefHeight="151.0" prefWidth="458.0" style="-fx-background-color: white;">
                                  <children>
                                     <TextField fx:id="textEditCat" layoutX="10.0" layoutY="44.0" prefHeight="32.0" prefWidth="342.0" />
-                                    <Label layoutX="10.0" layoutY="14.0" text="Введите название категории: ">
+                                    <Label fx:id="labelForEditCat" layoutX="10.0" layoutY="14.0" text="Введите название категории: ">
                                        <font>
                                           <Font size="18.0" />
                                        </font>
@@ -210,15 +250,26 @@
                                     <ChoiceBox fx:id="choiseChapterEditCat" layoutX="12.0" layoutY="127.0" prefHeight="25.0" prefWidth="338.0" />
                                  </children>
                               </AnchorPane>
+                           </content>
+                           <header>
+                              <AnchorPane prefHeight="47.0" prefWidth="458.0" style="-fx-background-color: #DCDCDC;">
+                                 <children>
+                                    <Label fx:id="labelMainForEditCat" layoutX="136.0" layoutY="10.0" text="Изменить категорию">
+                                       <font>
+                                          <Font name="System Italic" size="18.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </AnchorPane>
                            </header>
+                        </DialogPane>
+                        <DialogPane fx:id="dialogPaneEditTable" layoutX="22.0" layoutY="150.0" prefHeight="214.0" prefWidth="460.0" style="-fx-border-color: black; -fx-background-color: white;" visible="false" AnchorPane.rightAnchor="216.0" AnchorPane.topAnchor="150.0">
                            <buttonTypes>
                               <ButtonType fx:constant="OK" />
                               <ButtonType fx:constant="CLOSE" />
                            </buttonTypes>
-                        </DialogPane>
-                        <DialogPane fx:id="dialogPaneEditTable" layoutX="22.0" layoutY="150.0" prefHeight="214.0" prefWidth="460.0" style="-fx-border-color: grey;" visible="false" AnchorPane.rightAnchor="216.0" AnchorPane.topAnchor="150.0">
-                           <header>
-                              <AnchorPane prefHeight="178.0" prefWidth="460.0">
+                           <content>
+                              <AnchorPane prefHeight="178.0" prefWidth="460.0" style="-fx-background-color: white;">
                                  <children>
                                     <TextField fx:id="textEditTableUrl" layoutX="10.0" layoutY="32.0" prefHeight="32.0" prefWidth="342.0" />
                                     <Label layoutX="14.0" layoutY="11.0" text="URL">
@@ -240,11 +291,18 @@
                                     </Label>
                                  </children>
                               </AnchorPane>
+                           </content>
+                           <header>
+                              <AnchorPane prefHeight="47.0" prefWidth="458.0" style="-fx-background-color: #DCDCDC;">
+                                 <children>
+                                    <Label layoutX="109.0" layoutY="10.0" text="Изменить запись в таблице">
+                                       <font>
+                                          <Font name="System Italic" size="18.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </AnchorPane>
                            </header>
-                           <buttonTypes>
-                              <ButtonType fx:constant="OK" />
-                              <ButtonType fx:constant="CLOSE" />
-                           </buttonTypes>
                         </DialogPane>
                      </children>
                   </AnchorPane>

@@ -2,23 +2,25 @@ package com.example.maybelater;
 
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import SomePack.DataHandler;
 import SomePack.TableBody;
 import javafx.application.Application;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 
@@ -121,6 +123,24 @@ public class HelloController {
     private Label labelForChoiseEditCat;
 
     @FXML
+    private Label labelForEditCat;
+
+    @FXML
+    private Label labelMainForEditCat;
+
+    @FXML
+    private Label labelConfirmWindow;
+
+    @FXML
+    private Text textConfirmWindow;
+
+    @FXML
+    private ContextMenu contextMenuTreeView;
+
+    @FXML
+    private ContextMenu contextTableView;
+
+    @FXML
     void initialize() throws SQLException, ClassNotFoundException {
         DataHandler dbHandler = new DataHandler();
         List<TreeItem> listTreeItem = new ArrayList<>();
@@ -128,6 +148,7 @@ public class HelloController {
             listTreeItem.add(new TreeItem<>(dbHandler.takeChaptNameForChoise().get(i)));
         }
         createChoiseForAdd();
+
 
 //Добавление строки с URL в БД
         addButton.setOnAction(actionEvent -> {
@@ -139,14 +160,14 @@ public class HelloController {
             } catch (ClassNotFoundException e) {
                 System.out.println("no no no");
             }
+
+            ObservableList<TableBody> obsURLList
+                    = FXCollections.observableArrayList(dbHandler.URLListView(
+                    categoryChoiseBox.getValue()));
+            tableMain.setItems(obsURLList);
             urlField.clear();
             descriptionField.clear();
             categoryChoiseBox.setValue("Без категории: ");
-            ObservableList<TableBody> obsURLList
-                    = FXCollections.observableArrayList(dbHandler.URLListView(
-                    treeMenu.getSelectionModel().getSelectedItem().getValue()));
-            tableMain.setItems(obsURLList);
-
         });
 
 
@@ -157,7 +178,6 @@ public class HelloController {
                 dialogChaptAdd.setVisible(false);
             }
             dialogPaneAddCat.setVisible(true);
-
         });
 //Закрыть окно "Добавить категорию"
         dialogPaneAddCat.lookupButton(ButtonType.CLOSE).addEventFilter(ActionEvent.ACTION, event -> {
@@ -166,6 +186,7 @@ public class HelloController {
                 textAddCat.clear();
             }
         });
+
 
 //Добавление категории
         dialogPaneAddCat.lookupButton(ButtonType.OK).addEventFilter(ActionEvent.ACTION, event -> {
@@ -264,7 +285,7 @@ public class HelloController {
         columnDate.setMinWidth(50);
         columnDate.setCellValueFactory(new PropertyValueFactory<>("date"));
         tableMain.getColumns().addAll(columnSomeURL, columnDescription, columnDate);
-//        HBox placeHolder = new HBox();
+//      HBox placeHolder = new HBox();
 //        tableMain.getColumns().forEach(tc->{
 //            StackPane colHolder = new StackPane();
 //            colHolder.getStyleClass().add("table-view-place-holder");
@@ -274,24 +295,53 @@ public class HelloController {
 //      tableMain.setPlaceholder("Hello");
 
         //Левый щелчок мыши по TreeMenu
+        treeMenu.contextMenuProperty().bind(
+                Bindings.when(Bindings.isNotNull(treeMenu.getSelectionModel().selectedItemProperty()))
+                        .then(contextMenuTreeView)
+                        .otherwise((ContextMenu)null));
+//        tableMain.contextMenuProperty().bind(
+//                Bindings.when(Bindings.isNotNull(tableMain.getSelectionModel().selectedItemProperty()))
+//                        .then()
+//                        .otherwise((ContextMenu)null));
+
         treeMenu.setOnMouseClicked(mouseEvent -> {
             if (mouseEvent.getButton() == MouseButton.PRIMARY) {
-                treeMenu.getSelectionModel().selectedItemProperty()
-                        .addListener((v, oldValue, newValue) -> {
-                            ObservableList<TableBody> obsURLList
-                                    = FXCollections.observableArrayList(dbHandler.URLListView(newValue.getValue()));
-                            tableMain.setItems(obsURLList);
-                        });
+                    String badIdea = mouseEvent.getTarget().toString();
+                    if (badIdea.contains("null"))
+                        treeMenu.getSelectionModel().clearSelection();
+                    else {
+                        treeMenu.getSelectionModel().selectedItemProperty()
+                                .addListener((v, oldValue, newValue) -> {
+                                    if(newValue!=null){
+                                        ObservableList<TableBody> obsURLList
+                                                = FXCollections.observableArrayList(dbHandler.URLListView(newValue.getValue()));
+                                        tableMain.setItems(obsURLList);
+                                    }
+                                });
+                    }
             }
+
             //Правый щелчок мыши по TreeMenu
             else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
+                String badIdea = mouseEvent.getTarget().toString();
+                if (badIdea.contains("null"))
+                    treeMenu.getSelectionModel().clearSelection();
+//
+//                treeMenu.setOnMouseClicked(event -> {
+//                    System.out.println(event.getTarget().toString());
+//                    String badIdea = event.getTarget().toString();
+//                    if (badIdea.contains("null"))
+//                        treeMenu.getSelectionModel().clearSelection();
+//                });
 
 //Контекстное меню -> Изменить
                 contextEditCat.setOnAction(event -> {
-                    System.out.println("Hi");
+
                     if(treeMenu.getSelectionModel().getSelectedItem().getParent().getValue().equals("root")){
                         choiseChapterEditCat.setVisible(false);
                         labelForChoiseEditCat.setVisible(false);
+                        labelMainForEditCat.setText("Изменить раздел");
+                        labelForEditCat.setText("Введите название раздела: ");
                     }
                     dialogPaneEditCat.setVisible(true);
                     String buffCat = treeMenu.getSelectionModel().getSelectedItem().getValue();
@@ -314,9 +364,11 @@ public class HelloController {
                                         choiseChapterEditCat.getItems().indexOf(buffCat),textEditCat.getText().trim());
                                 treeMenu.getSelectionModel().getSelectedItem().setValue(textEditCat.getText().trim());
                                 textEditCat.clear();
-                                contextEditCat.setVisible(true);
+                                choiseChapterEditCat.setVisible(true);
                                 labelForChoiseEditCat.setVisible(true);
                                 dialogPaneEditCat.setVisible(false);
+                                labelMainForEditCat.setText("Изменить категорию");
+                                labelForEditCat.setText("Введите название категории: ");
 
                             }
                         }
@@ -326,23 +378,20 @@ public class HelloController {
                                         dbHandler.updateCategoryName(
                                                 dbHandler.takeCatWithCatId(buffCat), textEditCat.getText());
                                         treeMenu.getSelectionModel().getSelectedItem().setValue(textEditCat.getText().trim());
+///////////////////////////////         treeMenu.getSelectionModel().getSelectedItem().getParent().getChildren() обновление имени
 
                                         int indexOldCat = categoryChoiseBox.getItems().indexOf(buffCat);
                                         categoryChoiseBox.getItems().set(indexOldCat, textEditCat.getText().trim());
-                                        System.out.println("Cat is ok");
                                         textEditCat.clear();
+
                                     } catch (SQLException e) {
                                         e.printStackTrace();
                                     }
-                                    System.out.println("Next");
                                 }
                                 if (!(choiseChapterEditCat.getValue().equals(buffChapt))) {
-                                    System.out.println("urwellcome");
                                     try {
                                         dbHandler.updateCategoryChapt
                                                 (dbHandler.takeCatWithCatId(buffCat), choiseChapterEditCat.getValue());
-                                        System.out.println("Chapt is ok");
-
                                     } catch (SQLException e) {
                                         e.printStackTrace();
                                     }
@@ -361,17 +410,28 @@ public class HelloController {
                                     }
                                 }
                         }
+
                             dialogPaneEditCat.setVisible(false);
                         }});
                     dialogPaneEditCat.lookupButton(ButtonType.CLOSE).setOnMouseClicked(mouseEvent1 -> {
                         if (mouseEvent1.getButton().equals(MouseButton.PRIMARY)) {
                             dialogPaneEditCat.setVisible(false);
+                            choiseChapterEditCat.setVisible(true);
+                            labelForChoiseEditCat.setVisible(true);
+                            labelMainForEditCat.setText("Изменить категорию");
+                            labelForEditCat.setText("Введите название категории: ");
+
                         }
                     });
+
                 });
 
 //Контекстное меню -> Удалить
                 contextDelCat.setOnAction(event -> {
+                    if (treeMenu.getSelectionModel().getSelectedItem().getParent().getValue().equals("root")) {
+                        labelConfirmWindow.setText("Удаление раздела");
+                        textConfirmWindow.setText("Уверены, что хотите удалить выбранный раздел?");
+                    }
                     confirmWindow.setVisible(true);
                     confirmWindow.lookupButton(ButtonType.YES).setOnMouseClicked(mouseEvent1 -> {
                         String selection = treeMenu.getSelectionModel().getSelectedItem().getValue();
@@ -385,6 +445,9 @@ public class HelloController {
                                             treeMenu.getSelectionModel().getSelectedItem()));
                                     choiseChapterAddCat.getItems().remove(selection);
                                     choiseChapterEditCat.getItems().remove(selection);
+                                    labelConfirmWindow.setText("Удаление категории");
+                                    textConfirmWindow.setText("Уверены, что хотите удалить выбранную категорию?");
+
                                 } catch (SQLException e) {
                                     e.printStackTrace();
                                 }
@@ -397,20 +460,47 @@ public class HelloController {
                                             treeMenu.getSelectionModel().getSelectedItem());
                                     categoryChoiseBox.getItems().remove(
                                             selection);
+
                                 } catch (SQLException e) {
-                                    System.out.println("Loooooser");
                                     e.printStackTrace();
                                 }
                             }
-
                         }
                     });
                     confirmWindow.lookupButton(ButtonType.NO).addEventFilter(ActionEvent.ACTION, event1 -> {
                         confirmWindow.setVisible(false);
+                        labelConfirmWindow.setText("Удаление категории");
+                        textConfirmWindow.setText("Уверены, что хотите удалить выбранную категорию?");
+
                     });
                 });
             }
         });
+
+
+//        treeMenu.setOnMouseClicked(event -> {
+//            System.out.println(event.getTarget().toString());
+//            String badIdea = event.getTarget().toString();
+//            if (badIdea.contains("null"))
+//                treeMenu.getSelectionModel().clearSelection();
+//        });
+
+//Снятие выделения при клике на пустой области
+        tableMain.addEventFilter(MouseEvent.MOUSE_CLICKED, evt -> {
+            Node source = evt.getPickResult().getIntersectedNode();
+
+
+            // move up through the node hierarchy until a TableRow or scene root is found
+            while (source != null && !(source instanceof TableRow)) {
+                source = source.getParent();
+            }
+
+            // clear selection on click anywhere but on a filled row
+            if (source == null || (source instanceof TableRow && ((TableRow) source).isEmpty())) {
+                tableMain.getSelectionModel().clearSelection();
+            }
+        });
+
         try {
             choiseEditTable.getItems().addAll(dbHandler.takeCatNameForChoise());
         } catch (SQLException e) {
@@ -418,6 +508,34 @@ public class HelloController {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+
+        tableMain.setRowFactory(tv -> new TableRow<>() {
+//            @Override
+//            protected boolean isItemChanged(TableBody tableBody, TableBody t1) {
+//                return true;
+//            }
+
+            @Override
+            public void updateItem(TableBody item, boolean empty) {
+               setStyle("");
+                super.updateItem(item, empty) ;
+                System.out.println("Looser");
+                if (item == null) {
+                    setStyle("");
+                } else {
+                    try {
+                        if (dbHandler.selectIsVisited(item.getUrlId())){
+                            setStyle("-fx-text-background-color: #808080BB");
+                        }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+tableMain.setStyle("-fx-selection-bar: transparent;");
         tableMain.setOnMouseClicked(mouseEvent -> {
             if (mouseEvent.getButton() == MouseButton.PRIMARY & (
                     tableMain.getSelectionModel().getSelectedItem() != null)) {
@@ -434,6 +552,9 @@ public class HelloController {
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
+
+                    System.out.println("Looser");
+
                 }
 
 //Изменение и удаление tableMain
@@ -493,13 +614,11 @@ public class HelloController {
                         });
                     }
                 });
-                contextDelURL.setOnAction(event -> {
+                contextDelURL.setOnAction(actionEvent -> {
                     if (tableMain.getSelectionModel().getSelectedItem() != null) {
-                        System.out.println("нет");
-                        confirmWindowTable.setVisible(true);
-                        confirmWindowTable.lookupButton(ButtonType.YES).setOnMouseClicked(mouseEvent1 -> {
-                            if (mouseEvent1.getButton().equals(MouseButton.PRIMARY)) {
-                                System.out.println("Экшн");
+//                        confirmWindowTable.setVisible(true);
+//                        confirmWindowTable.lookupButton(ButtonType.YES).setOnMouseClicked(mouseEvent1 -> {
+ //                           if (event.getEventType().getName().getButton().equals(MouseButton.PRIMARY)) {
                                 try {
                                     dbHandler.deleteStringFromDB(
                                             tableMain.getSelectionModel().getSelectedItem().getUrlId());
@@ -520,12 +639,12 @@ public class HelloController {
                                 }
 
                             }
-                        });
-                        confirmWindowTable.lookupButton(ButtonType.NO).setOnMouseClicked(mouseEvent1 -> {
-                            if (mouseEvent1.getButton().equals(MouseButton.PRIMARY))
-                                confirmWindowTable.setVisible(false);
-                        });
-                    }
+//                        });
+//                        confirmWindowTable.lookupButton(ButtonType.NO).setOnMouseClicked(mouseEvent1 -> {
+//                            if (mouseEvent1.getButton().equals(MouseButton.PRIMARY))
+//                                confirmWindowTable.setVisible(false);
+//                        });
+
                 });
             }
         });
@@ -548,21 +667,23 @@ public class HelloController {
 
     public void makeTree(List<TreeItem> listTreeItem) throws SQLException, ClassNotFoundException {
         DataHandler dbHandler = new DataHandler();
-
+        ArrayList<String> newArr;
         TreeItem<String> root = new TreeItem<>("root");
         root.setExpanded(true);
         for (int i = 0; i < dbHandler.takeChaptNameForChoise().size(); i++) {
             root.getChildren().add(listTreeItem.get(i));
         }
         for (int i = 0; i < dbHandler.takeChaptNameForChoise().size(); i++) {
+            newArr = dbHandler.takeCatArrayForTree(dbHandler.takeChaptNameForChoise().get(i));
+            Collections.sort(newArr);
             for (int j = 0; j < dbHandler.takeCatArrayForTree(dbHandler.takeChaptNameForChoise().get(i)).size(); j++) {
                 makeBranch(
-                        dbHandler.takeCatArrayForTree(
-                                dbHandler.takeChaptNameForChoise().get(i)).get(j),
-                        listTreeItem.get(i));
+                       dbHandler.takeCatArrayForTree(
+                                dbHandler.takeChaptNameForChoise().get(i)).get(j),listTreeItem.get(i));
             }
         }
         treeMenu.setRoot(root);
-        treeMenu.setShowRoot(true);
+        treeMenu.setShowRoot(false);
+
     }
 }
