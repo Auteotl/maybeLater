@@ -239,8 +239,12 @@ public class DataHandler extends Configs {
                     String current = resultSet.getString(i);
                     buff.add(current);
                     if (buff.size() == columns) {
+                        if (buff.get(5).equals("t")){
+                            buff.set(5,"true");
+                        }
+                        else buff.set(5, "false");
                         urlList.add(new TableBody(Integer.parseInt(buff.get(0)), buff.get(1), buff.get(2),
-                                Integer.parseInt(buff.get(3)), buff.get(4), Boolean.getBoolean(buff.get(5))));
+                                Integer.parseInt(buff.get(3)), buff.get(4), Boolean.parseBoolean(buff.get(5))));
                         buff.clear();
                     }
                 }

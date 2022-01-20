@@ -1,6 +1,9 @@
 package com.example.maybelater;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -141,6 +144,13 @@ public class HelloController {
     private ContextMenu contextTableView;
 
     @FXML
+    private DialogPane NotValidURLDialog;
+
+    @FXML
+    private DialogPane tryDelMain;
+
+
+    @FXML
     void initialize() throws SQLException, ClassNotFoundException {
         DataHandler dbHandler = new DataHandler();
         List<TreeItem> listTreeItem = new ArrayList<>();
@@ -148,26 +158,60 @@ public class HelloController {
             listTreeItem.add(new TreeItem<>(dbHandler.takeChaptNameForChoise().get(i)));
         }
         createChoiseForAdd();
+//Без категории
+        if (!(dbHandler.takeCatNameForChoise().contains("Без категории"))) {
+            dbHandler.addNewChaptInDB("Main");
+            dbHandler.addNewCatInDB("Без категории",
+                    dbHandler.takeChaptId("Main"));
+            treeMenu.getRoot().getChildren().get(
+                    dbHandler.takeChaptNameForChoise().indexOf(
+                            "Main")).getChildren().add(new TreeItem<>("Без категории"));
+            categoryChoiseBox.getItems().add("Без категории");
+        }
 
 
 //Добавление строки с URL в БД
         addButton.setOnAction(actionEvent -> {
+            String addURL = urlField.getText().trim();
             try {
-                dbHandler.addInfoInURLTab(urlField.getText().trim(), descriptionField.getText().trim(),
-                        dbHandler.takeCatWithCatId(categoryChoiseBox.getValue()));
+                if (!(addURL.contains("http://") || addURL.contains("https://"))) {
+                    addURL = "http://" + urlField.getText().trim();
+                }
+                boolean valid = true;
+                try {
+                    URL url = new URL(addURL);
+                    URLConnection conn = url.openConnection();
+                    conn.connect();
+                } catch (MalformedURLException e) {
+                    valid = false;
+                    NotValidURLDialog.setVisible(true);
+                    NotValidURLDialog.lookupButton(ButtonType.CLOSE).addEventFilter(ActionEvent.ACTION, event -> {
+                        NotValidURLDialog.setVisible(false);
+                    });
+                } catch (IOException e) {
+                    valid = false;
+                    NotValidURLDialog.setVisible(true);
+                    NotValidURLDialog.lookupButton(ButtonType.CLOSE).addEventFilter(ActionEvent.ACTION, event -> {
+                        NotValidURLDialog.setVisible(false);
+                    });
+                }
+                if(valid) {
+
+                    dbHandler.addInfoInURLTab(addURL, descriptionField.getText().trim(),
+                            dbHandler.takeCatWithCatId(categoryChoiseBox.getValue()));
+                    ObservableList<TableBody> obsURLList
+                            = FXCollections.observableArrayList(dbHandler.URLListView(
+                            categoryChoiseBox.getValue()));
+                    tableMain.setItems(obsURLList);
+                    urlField.clear();
+                    descriptionField.clear();
+                    categoryChoiseBox.setValue("Без категории");
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
                 System.out.println("no no no");
             }
-
-            ObservableList<TableBody> obsURLList
-                    = FXCollections.observableArrayList(dbHandler.URLListView(
-                    categoryChoiseBox.getValue()));
-            tableMain.setItems(obsURLList);
-            urlField.clear();
-            descriptionField.clear();
-            categoryChoiseBox.setValue("Без категории: ");
         });
 
 
@@ -295,10 +339,11 @@ public class HelloController {
 //      tableMain.setPlaceholder("Hello");
 
         //Левый щелчок мыши по TreeMenu
+
         treeMenu.contextMenuProperty().bind(
                 Bindings.when(Bindings.isNotNull(treeMenu.getSelectionModel().selectedItemProperty()))
                         .then(contextMenuTreeView)
-                        .otherwise((ContextMenu)null));
+                        .otherwise((ContextMenu) null));
 //        tableMain.contextMenuProperty().bind(
 //                Bindings.when(Bindings.isNotNull(tableMain.getSelectionModel().selectedItemProperty()))
 //                        .then()
@@ -306,19 +351,20 @@ public class HelloController {
 
         treeMenu.setOnMouseClicked(mouseEvent -> {
             if (mouseEvent.getButton() == MouseButton.PRIMARY) {
-                    String badIdea = mouseEvent.getTarget().toString();
-                    if (badIdea.contains("null"))
-                        treeMenu.getSelectionModel().clearSelection();
-                    else {
-                        treeMenu.getSelectionModel().selectedItemProperty()
-                                .addListener((v, oldValue, newValue) -> {
-                                    if(newValue!=null){
-                                        ObservableList<TableBody> obsURLList
-                                                = FXCollections.observableArrayList(dbHandler.URLListView(newValue.getValue()));
-                                        tableMain.setItems(obsURLList);
-                                    }
-                                });
-                    }
+                String badIdea = mouseEvent.getTarget().toString();
+                if (badIdea.contains("null"))
+                    treeMenu.getSelectionModel().clearSelection();
+                else {
+                    treeMenu.getSelectionModel().selectedItemProperty()
+                            .addListener((v, oldValue, newValue) -> {
+                                if (newValue != null) {
+                                    ObservableList<TableBody> obsURLList
+                                            = FXCollections.observableArrayList(
+                                                    dbHandler.URLListView(newValue.getValue()));
+                                    tableMain.setItems(obsURLList);
+                                }
+                            });
+                }
             }
 
             //Правый щелчок мыши по TreeMenu
@@ -336,143 +382,171 @@ public class HelloController {
 
 //Контекстное меню -> Изменить
                 contextEditCat.setOnAction(event -> {
-
-                    if(treeMenu.getSelectionModel().getSelectedItem().getParent().getValue().equals("root")){
-                        choiseChapterEditCat.setVisible(false);
-                        labelForChoiseEditCat.setVisible(false);
-                        labelMainForEditCat.setText("Изменить раздел");
-                        labelForEditCat.setText("Введите название раздела: ");
-                    }
-                    dialogPaneEditCat.setVisible(true);
-                    String buffCat = treeMenu.getSelectionModel().getSelectedItem().getValue();
-                    String buffChapt = treeMenu.getSelectionModel().getSelectedItem().getParent().getValue();
-                    choiseChapterEditCat.setValue(buffChapt);
-                    textEditCat.setText(buffCat);
-                    dialogPaneEditCat.lookupButton(ButtonType.OK).setOnMouseClicked(mouseEvent1 -> {
-                        if (mouseEvent1.getButton().equals(MouseButton.PRIMARY)) {
-                        if(treeMenu.getSelectionModel().getSelectedItem().getParent().getValue().equals("root")){
-                            if (!(textEditCat.getText().equals(buffCat))) {
-                                try {
-                                    dbHandler.updateChaptName(buffCat, textEditCat.getText().trim());
-                                    System.out.println(choiseChapterAddCat.getItems().indexOf(buffCat));
-                                } catch (SQLException e) {
-                                    e.printStackTrace();
-                                }
-                                choiseChapterAddCat.getItems().set(
-                                        choiseChapterAddCat.getItems().indexOf(buffCat),textEditCat.getText().trim());
-                                choiseChapterEditCat.getItems().set(
-                                        choiseChapterEditCat.getItems().indexOf(buffCat),textEditCat.getText().trim());
-                                treeMenu.getSelectionModel().getSelectedItem().setValue(textEditCat.getText().trim());
-                                textEditCat.clear();
-                                choiseChapterEditCat.setVisible(true);
-                                labelForChoiseEditCat.setVisible(true);
-                                dialogPaneEditCat.setVisible(false);
-                                labelMainForEditCat.setText("Изменить категорию");
-                                labelForEditCat.setText("Введите название категории: ");
-
-                            }
+                    if (treeMenu.getSelectionModel().getSelectedItem().getValue().equals("Main")||
+                            treeMenu.getSelectionModel().getSelectedItem().getValue().equals("Без категории")) {
+                        tryDelMain.setVisible(true);
+                        tryDelMain.lookupButton(ButtonType.CLOSE).setOnMouseClicked(mouseEvent1 -> {
+                            tryDelMain.setVisible(false);
+                        });
+                    } else {
+                        if (treeMenu.getSelectionModel().getSelectedItem().getParent().getValue().equals("root")) {
+                            choiseChapterEditCat.setVisible(false);
+                            labelForChoiseEditCat.setVisible(false);
+                            labelMainForEditCat.setText("Изменить раздел");
+                            labelForEditCat.setText("Введите название раздела: ");
                         }
-                        else {
-                                if (!(textEditCat.getText().equals(buffCat))) {
-                                    try {
-                                        dbHandler.updateCategoryName(
-                                                dbHandler.takeCatWithCatId(buffCat), textEditCat.getText());
-                                        treeMenu.getSelectionModel().getSelectedItem().setValue(textEditCat.getText().trim());
-///////////////////////////////         treeMenu.getSelectionModel().getSelectedItem().getParent().getChildren() обновление имени
-
-                                        int indexOldCat = categoryChoiseBox.getItems().indexOf(buffCat);
-                                        categoryChoiseBox.getItems().set(indexOldCat, textEditCat.getText().trim());
+                        dialogPaneEditCat.setVisible(true);
+                        String buffCat = treeMenu.getSelectionModel().getSelectedItem().getValue();
+                        String buffChapt = treeMenu.getSelectionModel().getSelectedItem().getParent().getValue();
+                        choiseChapterEditCat.setValue(buffChapt);
+                        textEditCat.setText(buffCat);
+                        dialogPaneEditCat.lookupButton(ButtonType.OK).setOnMouseClicked(mouseEvent1 -> {
+                            if (mouseEvent1.getButton().equals(MouseButton.PRIMARY)) {
+                                if (treeMenu.getSelectionModel().getSelectedItem().getParent().getValue().equals(
+                                        "root")) {
+                                    if (!(textEditCat.getText().equals(buffCat))) {
+                                        try {
+                                            dbHandler.updateChaptName(buffCat, textEditCat.getText().trim());
+                                            System.out.println(choiseChapterAddCat.getItems().indexOf(buffCat));
+                                        } catch (SQLException e) {
+                                            e.printStackTrace();
+                                        }
+                                        choiseChapterAddCat.getItems().set(
+                                                choiseChapterAddCat.getItems().indexOf(buffCat),
+                                                textEditCat.getText().trim());
+                                        choiseChapterEditCat.getItems().set(
+                                                choiseChapterEditCat.getItems().indexOf(buffCat),
+                                                textEditCat.getText().trim());
+                                        treeMenu.getSelectionModel().getSelectedItem().setValue(
+                                                textEditCat.getText().trim());
                                         textEditCat.clear();
+                                        choiseChapterEditCat.setVisible(true);
+                                        labelForChoiseEditCat.setVisible(true);
+                                        dialogPaneEditCat.setVisible(false);
+                                        labelMainForEditCat.setText("Изменить категорию");
+                                        labelForEditCat.setText("Введите название категории: ");
 
-                                    } catch (SQLException e) {
-                                        e.printStackTrace();
                                     }
-                                }
-                                if (!(choiseChapterEditCat.getValue().equals(buffChapt))) {
-                                    try {
-                                        dbHandler.updateCategoryChapt
-                                                (dbHandler.takeCatWithCatId(buffCat), choiseChapterEditCat.getValue());
-                                    } catch (SQLException e) {
-                                        e.printStackTrace();
+                                } else {
+                                    if (!(textEditCat.getText().equals(buffCat))) {
+                                        try {
+                                            dbHandler.updateCategoryName(
+                                                    dbHandler.takeCatWithCatId(buffCat), textEditCat.getText());
+                                            treeMenu.getSelectionModel().getSelectedItem().setValue(
+                                                    textEditCat.getText().trim());
+//////////////////////treeMenu.getSelectionModel().getSelectedItem().getParent().getChildren() обновление имени
+
+                                            int indexOldCat = categoryChoiseBox.getItems().indexOf(buffCat);
+                                            categoryChoiseBox.getItems().set(indexOldCat, textEditCat.getText().trim());
+                                            textEditCat.clear();
+
+                                        } catch (SQLException e) {
+                                            e.printStackTrace();
+                                        }
                                     }
-                                }
-                                TreeItem<String> test1 = treeMenu.getSelectionModel().getSelectedItem();
-                                if (test1 != null) {
-                                    TreeItem<String> test2 = test1.getParent();
-                                    if (test2 != null) {
-                                        test2.getChildren().removeAll(test1);
-                                        for (int i = 0; i < treeMenu.getRoot().getChildren().size(); i++) {
-                                            if (treeMenu.getRoot().getChildren().get(i).getValue().equals(
-                                                    choiseChapterEditCat.getValue())) {
-                                                treeMenu.getRoot().getChildren().get(i).getChildren().add(test1);
+                                    if (!(choiseChapterEditCat.getValue().equals(buffChapt))) {
+                                        try {
+                                            dbHandler.updateCategoryChapt
+                                                    (dbHandler.takeCatWithCatId(buffCat),
+                                                            choiseChapterEditCat.getValue());
+                                        } catch (SQLException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                    TreeItem<String> test1 = treeMenu.getSelectionModel().getSelectedItem();
+                                    if (test1 != null) {
+                                        TreeItem<String> test2 = test1.getParent();
+                                        if (test2 != null) {
+                                            test2.getChildren().removeAll(test1);
+                                            for (int i = 0; i < treeMenu.getRoot().getChildren().size(); i++) {
+                                                if (treeMenu.getRoot().getChildren().get(i).getValue().equals(
+                                                        choiseChapterEditCat.getValue())) {
+                                                    treeMenu.getRoot().getChildren().get(i).getChildren().add(test1);
+                                                }
                                             }
                                         }
                                     }
                                 }
-                        }
 
-                            dialogPaneEditCat.setVisible(false);
-                        }});
-                    dialogPaneEditCat.lookupButton(ButtonType.CLOSE).setOnMouseClicked(mouseEvent1 -> {
-                        if (mouseEvent1.getButton().equals(MouseButton.PRIMARY)) {
-                            dialogPaneEditCat.setVisible(false);
-                            choiseChapterEditCat.setVisible(true);
-                            labelForChoiseEditCat.setVisible(true);
-                            labelMainForEditCat.setText("Изменить категорию");
-                            labelForEditCat.setText("Введите название категории: ");
+                                dialogPaneEditCat.setVisible(false);
+                            }
+                        });
+                        dialogPaneEditCat.lookupButton(ButtonType.CLOSE).setOnMouseClicked(mouseEvent1 -> {
+                            if (mouseEvent1.getButton().equals(MouseButton.PRIMARY)) {
+                                dialogPaneEditCat.setVisible(false);
+                                choiseChapterEditCat.setVisible(true);
+                                labelForChoiseEditCat.setVisible(true);
+                                labelMainForEditCat.setText("Изменить категорию");
+                                labelForEditCat.setText("Введите название категории: ");
 
-                        }
-                    });
+                            }
+                        });
 
+                    }
                 });
 
 //Контекстное меню -> Удалить
                 contextDelCat.setOnAction(event -> {
-                    if (treeMenu.getSelectionModel().getSelectedItem().getParent().getValue().equals("root")) {
-                        labelConfirmWindow.setText("Удаление раздела");
-                        textConfirmWindow.setText("Уверены, что хотите удалить выбранный раздел?");
-                    }
-                    confirmWindow.setVisible(true);
-                    confirmWindow.lookupButton(ButtonType.YES).setOnMouseClicked(mouseEvent1 -> {
-                        String selection = treeMenu.getSelectionModel().getSelectedItem().getValue();
-                        if (mouseEvent1.getButton().equals(MouseButton.PRIMARY)) {
-                            if (treeMenu.getSelectionModel().getSelectedItem().getParent().getValue().equals("root")) {
-                                try {
-                                    dbHandler.deleteChaptFromDB(
-                                            selection);
-                                    confirmWindow.setVisible(false);
-                                    treeMenu.getRoot().getChildren().remove((
-                                            treeMenu.getSelectionModel().getSelectedItem()));
-                                    choiseChapterAddCat.getItems().remove(selection);
-                                    choiseChapterEditCat.getItems().remove(selection);
-                                    labelConfirmWindow.setText("Удаление категории");
-                                    textConfirmWindow.setText("Уверены, что хотите удалить выбранную категорию?");
+                    if (treeMenu.getSelectionModel().getSelectedItem().getValue().equals("Main")||
+                            treeMenu.getSelectionModel().getSelectedItem().getValue().equals("Без категории")) {
+                        tryDelMain.setVisible(true);
+                        tryDelMain.lookupButton(ButtonType.CLOSE).setOnMouseClicked(mouseEvent1 -> {
+                            tryDelMain.setVisible(false);
+                        });
+                    } else {
 
-                                } catch (SQLException e) {
-                                    e.printStackTrace();
-                                }
-                            } else {
-                                try {
-                                    dbHandler.deleteCatFromDB(
-                                            selection);
-                                    confirmWindow.setVisible(false);
-                                    treeMenu.getSelectionModel().getSelectedItem().getParent().getChildren().remove(
-                                            treeMenu.getSelectionModel().getSelectedItem());
-                                    categoryChoiseBox.getItems().remove(
-                                            selection);
+                        if (treeMenu.getSelectionModel().getSelectedItem().getParent().getValue().equals("root")) {
+                            labelConfirmWindow.setText("Удаление раздела");
+                            textConfirmWindow.setText("Уверены, что хотите удалить выбранный раздел? " +
+                                    "Это приведет к удалению всех записей, которые относятся к данному разделу.");
+                        }
+                        confirmWindow.setVisible(true);
+                        confirmWindow.lookupButton(ButtonType.YES).setOnMouseClicked(mouseEvent1 -> {
+                            String selection = treeMenu.getSelectionModel().getSelectedItem().getValue();
+                            if (mouseEvent1.getButton().equals(MouseButton.PRIMARY)) {
+                                if (treeMenu.getSelectionModel().getSelectedItem().getParent().getValue().equals(
+                                        "root")) {
+                                    try {
+                                        dbHandler.deleteChaptFromDB(
+                                                selection);
+                                        confirmWindow.setVisible(false);
+                                        treeMenu.getRoot().getChildren().remove((
+                                                treeMenu.getSelectionModel().getSelectedItem()));
+                                        choiseChapterAddCat.getItems().remove(selection);
+                                        choiseChapterEditCat.getItems().remove(selection);
+                                        labelConfirmWindow.setText("Удаление категории");
+                                        textConfirmWindow.setText("Уверены, что хотите удалить выбранную категорию? " +
+                                                "Это приведет к удалению всех записей, которые относятся" +
+                                                " к данной категории.");
 
-                                } catch (SQLException e) {
-                                    e.printStackTrace();
+                                    } catch (SQLException e) {
+                                        e.printStackTrace();
+                                    }
+                                } else {
+                                    try {
+                                        dbHandler.deleteCatFromDB(
+                                                selection);
+                                        confirmWindow.setVisible(false);
+                                        treeMenu.getSelectionModel().getSelectedItem().getParent().getChildren().remove(
+                                                treeMenu.getSelectionModel().getSelectedItem());
+                                        categoryChoiseBox.getItems().remove(
+                                                selection);
+
+                                    } catch (SQLException e) {
+                                        e.printStackTrace();
+                                    }
                                 }
                             }
-                        }
-                    });
-                    confirmWindow.lookupButton(ButtonType.NO).addEventFilter(ActionEvent.ACTION, event1 -> {
-                        confirmWindow.setVisible(false);
-                        labelConfirmWindow.setText("Удаление категории");
-                        textConfirmWindow.setText("Уверены, что хотите удалить выбранную категорию?");
+                        });
+                        confirmWindow.lookupButton(ButtonType.NO).addEventFilter(ActionEvent.ACTION, event1 -> {
+                            confirmWindow.setVisible(false);
+                            labelConfirmWindow.setText("Удаление категории");
+                            textConfirmWindow.setText("Уверены, что хотите удалить выбранную категорию? " +
+                                    "Это приведет к удалению всех записей, которые относятся" +
+                                    " к данной категории.");
 
-                    });
+                        });
+                    }
                 });
             }
         });
@@ -510,32 +584,26 @@ public class HelloController {
         }
 
         tableMain.setRowFactory(tv -> new TableRow<>() {
-//            @Override
-//            protected boolean isItemChanged(TableBody tableBody, TableBody t1) {
-//                return true;
-//            }
+            @Override
+            protected boolean isItemChanged(TableBody tableBody, TableBody t1) {
+                return true;
+            }
 
             @Override
             public void updateItem(TableBody item, boolean empty) {
-               setStyle("");
-                super.updateItem(item, empty) ;
-                System.out.println("Looser");
+                setStyle("");
+                super.updateItem(item, empty);
                 if (item == null) {
                     setStyle("");
                 } else {
-                    try {
-                        if (dbHandler.selectIsVisited(item.getUrlId())){
-                            setStyle("-fx-text-background-color: #808080BB");
-                        }
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
+                    if (item.getisVisited()) {
+                        setStyle("-fx-text-background-color: #808080BB");
                     }
                 }
             }
         });
-tableMain.setStyle("-fx-selection-bar: transparent;");
+
+        tableMain.setStyle("-fx-selection-bar: transparent;");
         tableMain.setOnMouseClicked(mouseEvent -> {
             if (mouseEvent.getButton() == MouseButton.PRIMARY & (
                     tableMain.getSelectionModel().getSelectedItem() != null)) {
@@ -618,27 +686,27 @@ tableMain.setStyle("-fx-selection-bar: transparent;");
                     if (tableMain.getSelectionModel().getSelectedItem() != null) {
 //                        confirmWindowTable.setVisible(true);
 //                        confirmWindowTable.lookupButton(ButtonType.YES).setOnMouseClicked(mouseEvent1 -> {
- //                           if (event.getEventType().getName().getButton().equals(MouseButton.PRIMARY)) {
-                                try {
-                                    dbHandler.deleteStringFromDB(
-                                            tableMain.getSelectionModel().getSelectedItem().getUrlId());
-                                    confirmWindowTable.setVisible(false);
-                                    for (int i = 0; i < tableMain.getItems().size(); i++) {
-                                        System.out.println(tableMain.getItems().get(i));
-                                    }
-                                    System.out.println(1);
-                                    tableMain.getItems().remove(tableMain.getSelectionModel().getSelectedItem());
-                                    for (int i = 0; i < tableMain.getItems().size(); i++) {
-                                        System.out.println(tableMain.getItems().get(i));
-                                    }
-                                    System.out.println(2);
-
-                                } catch (SQLException e) {
-                                    System.out.println("Ha ha ha");
-                                    e.printStackTrace();
-                                }
-
+                        //                           if (event.getEventType().getName().getButton().equals(MouseButton.PRIMARY)) {
+                        try {
+                            dbHandler.deleteStringFromDB(
+                                    tableMain.getSelectionModel().getSelectedItem().getUrlId());
+                            confirmWindowTable.setVisible(false);
+                            for (int i = 0; i < tableMain.getItems().size(); i++) {
+                                System.out.println(tableMain.getItems().get(i));
                             }
+                            System.out.println(1);
+                            tableMain.getItems().remove(tableMain.getSelectionModel().getSelectedItem());
+                            for (int i = 0; i < tableMain.getItems().size(); i++) {
+                                System.out.println(tableMain.getItems().get(i));
+                            }
+                            System.out.println(2);
+
+                        } catch (SQLException e) {
+                            System.out.println("Ha ha ha");
+                            e.printStackTrace();
+                        }
+
+                    }
 //                        });
 //                        confirmWindowTable.lookupButton(ButtonType.NO).setOnMouseClicked(mouseEvent1 -> {
 //                            if (mouseEvent1.getButton().equals(MouseButton.PRIMARY))
@@ -653,7 +721,7 @@ tableMain.setStyle("-fx-selection-bar: transparent;");
     public void createChoiseForAdd() throws SQLException, ClassNotFoundException {
         DataHandler dbHandler = new DataHandler();
         categoryChoiseBox.getItems().addAll(dbHandler.takeCatNameForChoise());
-        categoryChoiseBox.setValue("Без категории: ");
+        categoryChoiseBox.setValue("Без категории");
     }
 
     //Ветка дерева
@@ -678,8 +746,8 @@ tableMain.setStyle("-fx-selection-bar: transparent;");
             Collections.sort(newArr);
             for (int j = 0; j < dbHandler.takeCatArrayForTree(dbHandler.takeChaptNameForChoise().get(i)).size(); j++) {
                 makeBranch(
-                       dbHandler.takeCatArrayForTree(
-                                dbHandler.takeChaptNameForChoise().get(i)).get(j),listTreeItem.get(i));
+                        dbHandler.takeCatArrayForTree(
+                                dbHandler.takeChaptNameForChoise().get(i)).get(j), listTreeItem.get(i));
             }
         }
         treeMenu.setRoot(root);

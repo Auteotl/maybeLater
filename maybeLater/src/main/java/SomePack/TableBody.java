@@ -10,17 +10,17 @@ public class TableBody {
     private String date;
     private boolean isVisited;
 
-    public TableBody() {
-        this.urlId = 0;
-        this.someURL = "";
-        this.description = "";
-        this.urlCat = 0;
-        this.date = "";
-        this.isVisited = false;
-    }
+//    public TableBody() {
+//        this.urlId = 0;
+//        this.someURL = "";
+//        this.description = "";
+//        this.urlCat = 0;
+//        this.date = "";
+//        this.isVisited = false;
+//    }
 
     public void setVisited(boolean visited) {
-        isVisited = visited;
+        this.isVisited = visited;
     }
     public void setUrlId(int urlId) {
         this.urlId = urlId;
@@ -63,6 +63,7 @@ public class TableBody {
 
     public boolean getisVisited() {
         return isVisited;}
+
     public TableBody(int urlId, String someURL, String description, int urlCat, String date, boolean isVisited) {
         this.urlId = urlId;
         this.someURL = someURL;
