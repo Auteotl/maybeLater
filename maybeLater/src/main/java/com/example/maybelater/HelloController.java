@@ -123,6 +123,9 @@ public class HelloController {
     private MenuItem contextEditURL;
 
     @FXML
+    private Label stationString;
+
+    @FXML
     private Label labelForChoiseEditCat;
 
     @FXML
@@ -139,9 +142,6 @@ public class HelloController {
 
     @FXML
     private ContextMenu contextMenuTreeView;
-
-    @FXML
-    private ContextMenu contextTableView;
 
     @FXML
     private DialogPane NotValidURLDialog;
