@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="javafx" name="maybeLater">
+    <output-path>$PROJECT_DIR$/out/artifacts/maybeLater</output-path>
+    <root id="root">
+      <element id="archive" name="maybeLater.jar">
+        <element id="module-output" name="maybeLater" />
+      </element>
+    </root>
+  </artifact>
+</component>

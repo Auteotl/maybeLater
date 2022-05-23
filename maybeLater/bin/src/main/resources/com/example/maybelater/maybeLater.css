@@ -1,0 +1,24 @@
+.table-view .column-header-background {
+    -fx-background-color: grey;
+}
+.table-row-cell: hover {
+    -fx-background-color: #93f9b911;
+    -fx-text-background-color: red;
+}
+
+.table-row-cell: selected {
+    -fx-background-color: #93f9b911;
+    -fx-text-background-color: red;
+    -fx-border-color: green;
+}
+
+.table-view-place-holder{
+  -fx-background-color:linear-gradient(from 50px 1px to 50px 49px , repeat, #ffffff  49%, #f9f9f9  12% );
+  -fx-border-width: 0px 1px 0px 0px;
+  -fx-border-color: linear-gradient(from 50px 14px to 50px 40px , repeat, #ededed 50%, #ededed 50%);
+}
+
+
+.table-view:selected{
+   -fx-background-color: transparent;
+}

@@ -1,15 +1,8 @@
 package SomePack;
 
-import com.example.maybelater.HelloController;
-import javafx.beans.binding.BooleanBinding;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-
 import java.sql.*;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Properties;
 import java.time.LocalDate;
 
 
@@ -198,13 +191,20 @@ public class DataHandler extends Configs {
 
     //Метод удаление раздела
     public void deleteChaptFromDB(String chaptName) throws SQLException {
+        deleteAllCatAtChaptFromDB(chaptName);
         String delete = "DELETE FROM " + "\"" + Const.CHAPTER_TABLE + "\""
                 + " WHERE " + "\"" + Const.ID_CHAPT + "\"" + " = "
                 + takeChaptWithChaptId(chaptName);
         PreparedStatement prSt = dbConnection.prepareStatement(delete);
         prSt.executeUpdate();
     }
-
+    public void deleteAllCatAtChaptFromDB(String chaptName) throws SQLException {
+        String delete = "DELETE FROM " + "\"" + Const.CATEGORY_TABLE + "\""
+                + " WHERE " + "\"" + Const.TYPE_CHAPT + "\"" + " = "
+                + takeChaptWithChaptId(chaptName);
+        PreparedStatement prSt = dbConnection.prepareStatement(delete);
+        prSt.executeUpdate();
+    }
     //Delete URL String
     public void deleteStringFromDB(int urlId) throws SQLException {
         String delete = "DELETE FROM " + "\"" + Const.URLTAB_TABLE + "\""

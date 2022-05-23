@@ -10,6 +10,7 @@ import java.util.*;
 import SomePack.DataHandler;
 import SomePack.TableBody;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,8 +22,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -66,12 +66,6 @@ public class HelloController {
     private DialogPane dialogPaneAddCat;
 
     @FXML
-    private DialogPane errorAddCat;
-
-    @FXML
-    private DialogPane errorAddChapt;
-
-    @FXML
     private DialogPane confirmWindow;
 
     @FXML
@@ -104,8 +98,6 @@ public class HelloController {
     @FXML
     private MenuItem contextEditCat;
 
-    @FXML
-    private DialogPane confirmWindowTable;
 
     @FXML
     private DialogPane dialogPaneEditCat;
@@ -123,7 +115,7 @@ public class HelloController {
     private MenuItem contextEditURL;
 
     @FXML
-    private Label stationString;
+    private Label statusBar;
 
     @FXML
     private Label labelForChoiseEditCat;
@@ -142,12 +134,6 @@ public class HelloController {
 
     @FXML
     private ContextMenu contextMenuTreeView;
-
-    @FXML
-    private DialogPane NotValidURLDialog;
-
-    @FXML
-    private DialogPane tryDelMain;
 
 
     @FXML
@@ -184,18 +170,12 @@ public class HelloController {
                     conn.connect();
                 } catch (MalformedURLException e) {
                     valid = false;
-                    NotValidURLDialog.setVisible(true);
-                    NotValidURLDialog.lookupButton(ButtonType.CLOSE).addEventFilter(ActionEvent.ACTION, event -> {
-                        NotValidURLDialog.setVisible(false);
-                    });
+                    system_message(statusBar, "Введите корректный URL адрес", Color.RED);
                 } catch (IOException e) {
                     valid = false;
-                    NotValidURLDialog.setVisible(true);
-                    NotValidURLDialog.lookupButton(ButtonType.CLOSE).addEventFilter(ActionEvent.ACTION, event -> {
-                        NotValidURLDialog.setVisible(false);
-                    });
+                    system_message(statusBar, "Введите корректный URL адрес", Color.RED);
                 }
-                if(valid) {
+                if (valid) {
 
                     dbHandler.addInfoInURLTab(addURL, descriptionField.getText().trim(),
                             dbHandler.takeCatWithCatId(categoryChoiseBox.getValue()));
@@ -203,6 +183,7 @@ public class HelloController {
                             = FXCollections.observableArrayList(dbHandler.URLListView(
                             categoryChoiseBox.getValue()));
                     tableMain.setItems(obsURLList);
+                    system_message(statusBar, "Добавлено", Color.GREEN);
                     urlField.clear();
                     descriptionField.clear();
                     categoryChoiseBox.setValue("Без категории");
@@ -210,7 +191,7 @@ public class HelloController {
             } catch (SQLException e) {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
-                System.out.println("no no no");
+                e.printStackTrace();
             }
         });
 
@@ -237,10 +218,7 @@ public class HelloController {
             try {
                 if (textAddCat.getText().trim() != "") {
                     if (dbHandler.takeCatNameForChoise().contains(textAddCat.getText().trim())) {
-                        errorAddCat.setVisible(true);
-                        errorAddCat.lookupButton(ButtonType.OK).addEventFilter(ActionEvent.ACTION, event1 -> {
-                            errorAddCat.setVisible(false);
-                        });
+                        system_message(statusBar, "Категория с таким названием уже существует", Color.RED);
                     } else {
                         String newCat = textAddCat.getText().trim();
                         dbHandler.addNewCatInDB(newCat,
@@ -251,14 +229,13 @@ public class HelloController {
                                 dbHandler.takeChaptNameForChoise().indexOf(
                                         choiseChapterAddCat.getValue())).getChildren().add(new TreeItem<>(newCat));
                         categoryChoiseBox.getItems().add(newCat);
+                        system_message(statusBar, "Категория добавлена", Color.GREEN);
                     }
                 } else dialogPaneAddCat.setVisible(false);
 
             } catch (SQLException e) {
                 e.printStackTrace();
-                System.out.println("no");
             } catch (ClassNotFoundException e) {
-                System.out.println("still no");
                 e.printStackTrace();
             }
         });
@@ -284,10 +261,7 @@ public class HelloController {
             try {
                 if (textAddChapt.getText().trim() != "") {
                     if (dbHandler.takeChaptNameForChoise().contains(textAddChapt.getText().trim())) {
-                        errorAddChapt.setVisible(true);
-                        errorAddChapt.lookupButton(ButtonType.OK).addEventFilter(ActionEvent.ACTION, event1 -> {
-                            errorAddChapt.setVisible(false);
-                        });
+                        system_message(statusBar, "Раздел с таким названием уже существует", Color.RED);
                     } else {
                         String newChapt = textAddChapt.getText().trim();
                         dbHandler.addNewChaptInDB(newChapt);
@@ -296,6 +270,7 @@ public class HelloController {
                         choiseChapterEditCat.getItems().add(newChapt);
                         dialogChaptAdd.setVisible(false);
                         textAddChapt.clear();
+                        system_message(statusBar, "Раздел добавлен", Color.GREEN);
                     }
                 } else dialogChaptAdd.setVisible(false);
 
@@ -360,7 +335,7 @@ public class HelloController {
                                 if (newValue != null) {
                                     ObservableList<TableBody> obsURLList
                                             = FXCollections.observableArrayList(
-                                                    dbHandler.URLListView(newValue.getValue()));
+                                            dbHandler.URLListView(newValue.getValue()));
                                     tableMain.setItems(obsURLList);
                                 }
                             });
@@ -372,22 +347,13 @@ public class HelloController {
                 String badIdea = mouseEvent.getTarget().toString();
                 if (badIdea.contains("null"))
                     treeMenu.getSelectionModel().clearSelection();
-//
-//                treeMenu.setOnMouseClicked(event -> {
-//                    System.out.println(event.getTarget().toString());
-//                    String badIdea = event.getTarget().toString();
-//                    if (badIdea.contains("null"))
-//                        treeMenu.getSelectionModel().clearSelection();
-//                });
+
 
 //Контекстное меню -> Изменить
                 contextEditCat.setOnAction(event -> {
-                    if (treeMenu.getSelectionModel().getSelectedItem().getValue().equals("Main")||
+                    if (treeMenu.getSelectionModel().getSelectedItem().getValue().equals("Main") ||
                             treeMenu.getSelectionModel().getSelectedItem().getValue().equals("Без категории")) {
-                        tryDelMain.setVisible(true);
-                        tryDelMain.lookupButton(ButtonType.CLOSE).setOnMouseClicked(mouseEvent1 -> {
-                            tryDelMain.setVisible(false);
-                        });
+                        system_message(statusBar, "Не стоит этого делать", Color.RED);
                     } else {
                         if (treeMenu.getSelectionModel().getSelectedItem().getParent().getValue().equals("root")) {
                             choiseChapterEditCat.setVisible(false);
@@ -407,7 +373,6 @@ public class HelloController {
                                     if (!(textEditCat.getText().equals(buffCat))) {
                                         try {
                                             dbHandler.updateChaptName(buffCat, textEditCat.getText().trim());
-                                            System.out.println(choiseChapterAddCat.getItems().indexOf(buffCat));
                                         } catch (SQLException e) {
                                             e.printStackTrace();
                                         }
@@ -422,6 +387,7 @@ public class HelloController {
                                         textEditCat.clear();
                                         choiseChapterEditCat.setVisible(true);
                                         labelForChoiseEditCat.setVisible(true);
+                                        system_message(statusBar, "Изменения внесены успешно", Color.GREEN);
                                         dialogPaneEditCat.setVisible(false);
                                         labelMainForEditCat.setText("Изменить категорию");
                                         labelForEditCat.setText("Введите название категории: ");
@@ -467,7 +433,7 @@ public class HelloController {
                                         }
                                     }
                                 }
-
+                                system_message(statusBar, "Изменения внесены успешно", Color.GREEN);
                                 dialogPaneEditCat.setVisible(false);
                             }
                         });
@@ -487,12 +453,9 @@ public class HelloController {
 
 //Контекстное меню -> Удалить
                 contextDelCat.setOnAction(event -> {
-                    if (treeMenu.getSelectionModel().getSelectedItem().getValue().equals("Main")||
+                    if (treeMenu.getSelectionModel().getSelectedItem().getValue().equals("Main") ||
                             treeMenu.getSelectionModel().getSelectedItem().getValue().equals("Без категории")) {
-                        tryDelMain.setVisible(true);
-                        tryDelMain.lookupButton(ButtonType.CLOSE).setOnMouseClicked(mouseEvent1 -> {
-                            tryDelMain.setVisible(false);
-                        });
+                        system_message(statusBar, "Не стоит этого делать", Color.RED);
                     } else {
 
                         if (treeMenu.getSelectionModel().getSelectedItem().getParent().getValue().equals("root")) {
@@ -536,6 +499,7 @@ public class HelloController {
                                         e.printStackTrace();
                                     }
                                 }
+                                system_message(statusBar, "Успешно удалено", Color.GREEN);
                             }
                         });
                         confirmWindow.lookupButton(ButtonType.NO).addEventFilter(ActionEvent.ACTION, event1 -> {
@@ -550,15 +514,6 @@ public class HelloController {
                 });
             }
         });
-
-
-//        treeMenu.setOnMouseClicked(event -> {
-//            System.out.println(event.getTarget().toString());
-//            String badIdea = event.getTarget().toString();
-//            if (badIdea.contains("null"))
-//                treeMenu.getSelectionModel().clearSelection();
-//        });
-
 //Снятие выделения при клике на пустой области
         tableMain.addEventFilter(MouseEvent.MOUSE_CLICKED, evt -> {
             Node source = evt.getPickResult().getIntersectedNode();
@@ -582,13 +537,8 @@ public class HelloController {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-
+//Смена цвета текста строки при переходе
         tableMain.setRowFactory(tv -> new TableRow<>() {
-            @Override
-            protected boolean isItemChanged(TableBody tableBody, TableBody t1) {
-                return true;
-            }
-
             @Override
             public void updateItem(TableBody item, boolean empty) {
                 setStyle("");
@@ -611,18 +561,18 @@ public class HelloController {
                     Application app = new Application() {
                         @Override
                         public void start(Stage stage) throws Exception {
-
                         }
                     };
                     app.getHostServices().showDocument(tableMain.getSelectionModel().getSelectedItem().getSomeURL());
-                    try {
-                        dbHandler.updateIsVisited(tableMain.getSelectionModel().getSelectedItem().getUrlId());
-                    } catch (SQLException e) {
-                        e.printStackTrace();
+                    system_message(statusBar, "Выполняется переход...", Color.BLACK);
+                    if (tableMain.getSelectionModel().getSelectedItem().getisVisited() == false) {
+                        try {
+                            dbHandler.updateIsVisited(tableMain.getSelectionModel().getSelectedItem().getUrlId());
+                            tableMain.getSelectionModel().getSelectedItem().setIsVisited(true);
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
                     }
-
-                    System.out.println("Looser");
-
                 }
 
 //Изменение и удаление tableMain
@@ -671,7 +621,7 @@ public class HelloController {
                                         = FXCollections.observableArrayList(dbHandler.URLListView(
                                         treeMenu.getSelectionModel().getSelectedItem().getValue()));
                                 tableMain.setItems(obsURLList);
-
+                                system_message(statusBar, "Изменения внесены успешно", Color.GREEN);
                                 dialogPaneEditTable.setVisible(false);
                             }
                         });
@@ -684,35 +634,16 @@ public class HelloController {
                 });
                 contextDelURL.setOnAction(actionEvent -> {
                     if (tableMain.getSelectionModel().getSelectedItem() != null) {
-//                        confirmWindowTable.setVisible(true);
-//                        confirmWindowTable.lookupButton(ButtonType.YES).setOnMouseClicked(mouseEvent1 -> {
-                        //                           if (event.getEventType().getName().getButton().equals(MouseButton.PRIMARY)) {
                         try {
                             dbHandler.deleteStringFromDB(
                                     tableMain.getSelectionModel().getSelectedItem().getUrlId());
-                            confirmWindowTable.setVisible(false);
-                            for (int i = 0; i < tableMain.getItems().size(); i++) {
-                                System.out.println(tableMain.getItems().get(i));
-                            }
-                            System.out.println(1);
                             tableMain.getItems().remove(tableMain.getSelectionModel().getSelectedItem());
-                            for (int i = 0; i < tableMain.getItems().size(); i++) {
-                                System.out.println(tableMain.getItems().get(i));
-                            }
-                            System.out.println(2);
-
                         } catch (SQLException e) {
-                            System.out.println("Ha ha ha");
+                            system_message(statusBar, "Удаление не удалось", Color.RED);
                             e.printStackTrace();
                         }
 
                     }
-//                        });
-//                        confirmWindowTable.lookupButton(ButtonType.NO).setOnMouseClicked(mouseEvent1 -> {
-//                            if (mouseEvent1.getButton().equals(MouseButton.PRIMARY))
-//                                confirmWindowTable.setVisible(false);
-//                        });
-
                 });
             }
         });
@@ -753,5 +684,30 @@ public class HelloController {
         treeMenu.setRoot(root);
         treeMenu.setShowRoot(false);
 
+    }
+
+    public static void system_message(Label label, String what, Color color) {
+
+        label.setText(what);
+        label.setTextFill(color);
+        Thread system_message_thread = new Thread(new Runnable() {
+
+            public void run() {
+
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException ex) {
+
+                }
+                Platform.runLater(new Runnable() {
+                    public void run() {
+                        label.setText("");
+                        //label.setStyle();
+
+                    }
+                });
+            }
+        });
+        system_message_thread.start();
     }
 }

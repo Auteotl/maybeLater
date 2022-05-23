@@ -1,3 +1,8 @@
 Manifest-Version: 1.0
-Main-Class: Main_1
+Main-Class: com.example.maybelater.HelloApplication
+Class-Path: javafx-fxml-17.0.0.1-win.jar javafx-graphics-17.0.0.1-win.ja
+ r javafx-base-17.0.0.1.jar postgresql-42.3.1.jar javafx-base-17.0.0.1-w
+ in.jar javafx-controls-17.0.0.1.jar NamedParameterPreparedStatement-0.1
+ .jar postgresql-42.3.1.jar javafx-fxml-17.0.0.1.jar javafx-graphics-17.
+ 0.0.1.jar checker-qual-3.5.0.jar javafx-controls-17.0.0.1-win.jar
 

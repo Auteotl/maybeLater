@@ -1,6 +1,5 @@
 package SomePack;
 
-import java.util.Date;
 
 public class TableBody {
     private int urlId;
@@ -10,16 +9,16 @@ public class TableBody {
     private String date;
     private boolean isVisited;
 
-//    public TableBody() {
-//        this.urlId = 0;
-//        this.someURL = "";
-//        this.description = "";
-//        this.urlCat = 0;
-//        this.date = "";
-//        this.isVisited = false;
-//    }
+    public TableBody() {
+        this.urlId = 0;
+        this.someURL = "";
+        this.description = "";
+        this.urlCat = 0;
+        this.date = "";
+        this.isVisited = false;
+    }
 
-    public void setVisited(boolean visited) {
+    public void setIsVisited(boolean visited) {
         this.isVisited = visited;
     }
     public void setUrlId(int urlId) {

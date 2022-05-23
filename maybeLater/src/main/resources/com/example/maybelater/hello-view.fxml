@@ -18,7 +18,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<SplitPane dividerPositions="0.5" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="655.0" prefWidth="920.0" style="-fx-background-color: grey;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.maybelater.HelloController">
+<SplitPane dividerPositions="0.5" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="655.0" prefWidth="920.0" style="-fx-background-color: grey;" xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.maybelater.HelloController">
    <items>
       <MenuBar fx:id="menuBar" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="920.0">
          <menus>
@@ -55,81 +55,35 @@
                   </AnchorPane>
                   <AnchorPane prefHeight="545.0" prefWidth="698.0" style="-fx-background-color: white;">
                      <children>
-                        <TableView fx:id="tableMain" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="545.0" prefWidth="700.0" style="-fx-background-color: #ebebeb; -fx-border-color: #ebebeb;" stylesheets="@maybeLater.css" />
-                        <DialogPane fx:id="errorAddCat" layoutX="36.0" layoutY="220.0" prefHeight="161.0" prefWidth="440.0" style="-fx-border-color: black; -fx-background-color: white;" visible="false">
-                           <buttonTypes>
-                              <ButtonType fx:constant="OK" />
-                           </buttonTypes>
-                           <content>
-                              <AnchorPane prefHeight="84.0" prefWidth="438.0">
-                                 <children>
-                                    <Label layoutX="26.0" layoutY="36.0" prefHeight="39.0" prefWidth="392.0" text="Категория с таким названием уже существует">
-                                       <font>
-                                          <Font size="18.0" />
-                                       </font>
-                                    </Label>
-                                 </children>
-                              </AnchorPane>
-                           </content>
-                           <header>
-                              <AnchorPane prefHeight="43.0" prefWidth="438.0" style="-fx-background-color: #DCDCDC;">
-                                 <children>
-                                    <Label alignment="CENTER" layoutX="102.0" layoutY="8.0" prefHeight="27.0" prefWidth="220.0" text="Ошибка!">
-                                       <font>
-                                          <Font name="System Bold" size="20.0" />
-                                       </font>
-                                    </Label>
-                                 </children>
-                              </AnchorPane>
-                           </header>
-                        </DialogPane>
-                        <DialogPane fx:id="errorAddChapt" layoutX="46.0" layoutY="221.0" prefHeight="114.0" prefWidth="431.0" style="-fx-border-color: black; -fx-background-color: white;" visible="false">
-                           <buttonTypes>
-                              <ButtonType fx:constant="OK" />
-                           </buttonTypes>
-                           <content>
-                              <AnchorPane prefHeight="72.0" prefWidth="3182.0" style="-fx-background-color: white;">
-                                 <children>
-                                    <Label layoutX="38.0" layoutY="34.0" prefHeight="39.0" prefWidth="369.0" text="Раздел с таким названием уже существует">
-                                       <font>
-                                          <Font size="18.0" />
-                                       </font>
-                                    </Label>
-                                 </children>
-                              </AnchorPane>
-                           </content>
-                           <header>
-                              <AnchorPane prefHeight="43.0" prefWidth="438.0" style="-fx-background-color: #DCDCDC;">
-                                 <children>
-                                    <Label alignment="CENTER" layoutX="102.0" layoutY="8.0" prefHeight="27.0" prefWidth="220.0" text="Ошибка!">
-                                       <font>
-                                          <Font name="System Bold" size="20.0" />
-                                       </font>
-                                    </Label>
-                                 </children>
-                              </AnchorPane>
-                           </header>
-                        </DialogPane>
-                        <DialogPane fx:id="confirmWindow" layoutX="3.0" layoutY="163.0" maxHeight="161.0" maxWidth="550.0" minHeight="150.0" minWidth="550.0" prefHeight="161.0" prefWidth="550.0" style="-fx-background-color: white; -fx-border-color: black;" visible="false">
+                        <TableView fx:id="tableMain" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="545.0" prefWidth="700.0" style="-fx-background-color: #ebebeb; -fx-border-color: #ebebeb;" stylesheets="@maybeLater.css">
+                           <contextMenu>
+                              <ContextMenu fx:id="contextMenuTable">
+                                <items>
+                                  <MenuItem fx:id="contextEditURL" mnemonicParsing="false" text="Изменить" />
+                                    <MenuItem fx:id="contextDelURL" mnemonicParsing="false" text="Удалить" />
+                                </items>
+                              </ContextMenu>
+                           </contextMenu></TableView>
+                        <DialogPane fx:id="confirmWindow" layoutX="3.0" layoutY="163.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="550.0" style="-fx-background-color: white; -fx-border-color: #DCDCDC; -fx-background-radius: 20; -fx-border-radius: 15; -fx-border-width: 7;" visible="false">
                            <buttonTypes>
                               <ButtonType fx:constant="YES" />
                               <ButtonType fx:constant="NO" />
                            </buttonTypes>
                            <header>
-                              <AnchorPane prefHeight="35.0" prefWidth="550.0" style="-fx-background-color: #DCDCDC;">
+                              <AnchorPane prefHeight="47.0" prefWidth="550.0" style="-fx-background-color: #DCDCDC;">
                                  <children>
-                                    <Label fx:id="labelConfirmWindow" layoutX="173.0" prefHeight="35.0" prefWidth="203.0" text="Удаление категории" textFill="#111111">
+                                    <Label fx:id="labelConfirmWindow" layoutX="29.0" layoutY="6.0" prefHeight="35.0" prefWidth="203.0" text="Удаление категории" textFill="#111111">
                                        <font>
-                                          <Font name="System Bold" size="20.0" />
+                                          <Font name="System Italic" size="20.0" />
                                        </font>
                                     </Label>
                                  </children>
                               </AnchorPane>
                            </header>
                            <content>
-                              <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                              <AnchorPane prefHeight="130.0" prefWidth="550.0">
                                  <children>
-                                    <Text fx:id="textConfirmWindow" layoutX="33.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Уверены, что хотите удалить выбранную категорию? Это приведет к удалению всех записей, которые относятся к данной категории." wrappingWidth="482.0">
+                                    <Text fx:id="textConfirmWindow" layoutX="35.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Уверены, что хотите удалить выбранную категорию? Это приведет к удалению всех записей, которые относятся к данной категории." textAlignment="JUSTIFY" wrappingWidth="467.0" AnchorPane.rightAnchor="34.0">
                                        <font>
                                           <Font size="19.0" />
                                        </font>
@@ -137,60 +91,6 @@
                                  </children>
                               </AnchorPane>
                            </content>
-                        </DialogPane>
-                        <DialogPane fx:id="NotValidURLDialog" layoutX="48.0" layoutY="201.0" maxHeight="178.0" maxWidth="550.0" minHeight="150.0" minWidth="288.0" prefHeight="150.0" prefWidth="363.0" style="-fx-background-color: white; -fx-border-color: black;" visible="false">
-                           <header>
-                              <AnchorPane prefHeight="35.0" prefWidth="550.0" style="-fx-background-color: #DCDCDC;">
-                                 <children>
-                                    <Label fx:id="labelConfirmWindow1" layoutX="135.0" layoutY="4.0" prefHeight="35.0" prefWidth="91.0" text="Ошибка" textFill="#111111">
-                                       <font>
-                                          <Font name="System Bold" size="20.0" />
-                                       </font>
-                                    </Label>
-                                 </children>
-                              </AnchorPane>
-                           </header>
-                           <content>
-                              <AnchorPane prefHeight="200.0" prefWidth="200.0">
-                                 <children>
-                                    <Text fx:id="textConfirmWindow1" layoutX="39.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Введите корректный URL адрес!" wrappingWidth="283.0">
-                                       <font>
-                                          <Font size="19.0" />
-                                       </font>
-                                    </Text>
-                                 </children>
-                              </AnchorPane>
-                           </content>
-                           <buttonTypes>
-                              <ButtonType fx:constant="CLOSE" />
-                           </buttonTypes>
-                        </DialogPane>
-                        <DialogPane fx:id="tryDelMain" layoutX="58.0" layoutY="211.0" maxHeight="178.0" maxWidth="550.0" minHeight="150.0" minWidth="288.0" prefHeight="150.0" prefWidth="363.0" style="-fx-background-color: white; -fx-border-color: black;" visible="false">
-                           <header>
-                              <AnchorPane prefHeight="35.0" prefWidth="550.0" style="-fx-background-color: #DCDCDC;">
-                                 <children>
-                                    <Label fx:id="labelConfirmWindow11" layoutX="162.0" layoutY="4.0" prefHeight="35.0" prefWidth="38.0" text="No" textFill="#111111">
-                                       <font>
-                                          <Font name="System Bold" size="20.0" />
-                                       </font>
-                                    </Label>
-                                 </children>
-                              </AnchorPane>
-                           </header>
-                           <content>
-                              <AnchorPane prefHeight="200.0" prefWidth="200.0">
-                                 <children>
-                                    <Text fx:id="textConfirmWindow11" layoutX="83.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Не стоит этого делать" wrappingWidth="196.0">
-                                       <font>
-                                          <Font size="19.0" />
-                                       </font>
-                                    </Text>
-                                 </children>
-                              </AnchorPane>
-                           </content>
-                           <buttonTypes>
-                              <ButtonType fx:constant="CLOSE" />
-                           </buttonTypes>
                         </DialogPane>
                      </children>
                   </AnchorPane>
@@ -210,12 +110,12 @@
                   <Separator layoutY="51.0" prefHeight="5.0" prefWidth="920.0" style="-fx-background-color: #ebebeb; -fx-border-color: #c8c8c8;" />
                </children>
             </AnchorPane>
-            <Label fx:id="stationString" layoutY="602.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="20.0" prefWidth="920.0" style="-fx-background-color: #ebebeb;" text="Label">
+            <Label fx:id="statusBar" layoutY="602.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="20.0" prefWidth="918.0" style="-fx-background-color: #ebebeb;" text="">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <DialogPane fx:id="dialogPaneAddCat" layoutX="245.0" layoutY="167.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="260.0" prefWidth="430.0" style="-fx-background-color: white; -fx-border-color: #808080;" visible="false">
+            <DialogPane fx:id="dialogPaneAddCat" layoutX="245.0" layoutY="167.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="260.0" prefWidth="430.0" style="-fx-background-color: white; -fx-border-color: #DCDCDC; -fx-border-radius: 15; -fx-background-radius: 20; -fx-border-width: 7;" visible="false">
                <buttonTypes>
                   <ButtonType fx:constant="OK" />
                   <ButtonType fx:constant="CLOSE" />
@@ -239,7 +139,7 @@
                   </AnchorPane>
                </content>
                <header>
-                  <AnchorPane prefHeight="47.0" prefWidth="458.0" style="-fx-background-color: #DCDCDC;">
+                  <AnchorPane prefHeight="47.0" prefWidth="428.0" style="-fx-background-color: #DCDCDC;">
                      <children>
                         <Label layoutX="14.0" layoutY="10.0" text="Добавить категорию">
                            <font>
@@ -250,7 +150,7 @@
                   </AnchorPane>
                </header>
             </DialogPane>
-            <DialogPane fx:id="dialogChaptAdd" layoutX="250.0" layoutY="195.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="190.0" prefWidth="420.0" style="-fx-background-color: white;" visible="false">
+            <DialogPane fx:id="dialogChaptAdd" layoutX="250.0" layoutY="195.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="190.0" prefWidth="420.0" style="-fx-background-color: white; -fx-border-color: #DCDCDC; -fx-border-radius: 15; -fx-background-radius: 20; -fx-border-width: 7;" visible="false">
                <buttonTypes>
                   <ButtonType fx:constant="OK" />
                   <ButtonType fx:constant="CLOSE" />
@@ -272,7 +172,7 @@
                   </AnchorPane>
                </content>
                <header>
-                  <AnchorPane prefHeight="47.0" prefWidth="458.0" style="-fx-background-color: grey;">
+                  <AnchorPane prefHeight="47.0" prefWidth="458.0" style="-fx-background-color: #DCDCDC;">
                      <children>
                         <Label layoutX="14.0" layoutY="10.0" text="Добавить раздел">
                            <font>
@@ -283,7 +183,7 @@
                   </AnchorPane>
                </header>
             </DialogPane>
-            <DialogPane fx:id="dialogPaneEditCat" layoutX="260.0" layoutY="165.0" prefHeight="215.0" prefWidth="400.0" style="-fx-border-color: black; -fx-background-color: white;" visible="false">
+            <DialogPane fx:id="dialogPaneEditCat" layoutX="260.0" layoutY="165.0" prefHeight="215.0" prefWidth="400.0" style="-fx-border-color: #DCDCDC; -fx-background-color: white; -fx-border-radius: 15; -fx-background-radius: 20; -fx-border-width: 7;" visible="false">
                <buttonTypes>
                   <ButtonType fx:constant="OK" />
                   <ButtonType fx:constant="CLOSE" />
@@ -309,7 +209,7 @@
                <header>
                   <AnchorPane prefHeight="47.0" prefWidth="458.0" style="-fx-background-color: #DCDCDC;">
                      <children>
-                        <Label fx:id="labelMainForEditCat" layoutX="106.0" layoutY="10.0" text="Изменить категорию">
+                        <Label fx:id="labelMainForEditCat" layoutX="25.0" layoutY="10.0" text="Изменить категорию">
                            <font>
                               <Font name="System Italic" size="18.0" />
                            </font>
@@ -318,7 +218,7 @@
                   </AnchorPane>
                </header>
             </DialogPane>
-            <DialogPane fx:id="dialogPaneEditTable" prefHeight="225.0" prefWidth="400.0" style="-fx-border-color: black; -fx-background-color: white;" visible="false" AnchorPane.rightAnchor="260.0" AnchorPane.topAnchor="150.0">
+            <DialogPane fx:id="dialogPaneEditTable" prefHeight="225.0" prefWidth="400.0" style="-fx-border-color: #DCDCDC; -fx-background-color: white; -fx-background-radius: 20; -fx-border-radius: 15; -fx-border-width: 7;" visible="false" AnchorPane.rightAnchor="260.0" AnchorPane.topAnchor="150.0">
                <buttonTypes>
                   <ButtonType fx:constant="OK" />
                   <ButtonType fx:constant="CLOSE" />
@@ -326,20 +226,20 @@
                <content>
                   <AnchorPane prefHeight="178.0" prefWidth="460.0" style="-fx-background-color: white;">
                      <children>
-                        <TextField fx:id="textEditTableUrl" layoutX="28.0" layoutY="28.0" prefHeight="30.0" prefWidth="342.0" />
-                        <Label layoutX="28.0" layoutY="1.0" prefHeight="25.0" prefWidth="335.0" text="URL">
+                        <TextField fx:id="textEditTableUrl" layoutX="29.0" layoutY="38.0" prefHeight="30.0" prefWidth="342.0" />
+                        <Label layoutX="29.0" layoutY="11.0" prefHeight="25.0" prefWidth="335.0" text="URL">
                            <font>
                               <Font size="18.0" />
                            </font>
                         </Label>
-                        <Label layoutX="28.0" layoutY="115.0" prefHeight="25.0" prefWidth="335.0" text="Категория">
+                        <Label layoutX="29.0" layoutY="125.0" prefHeight="25.0" prefWidth="335.0" text="Категория">
                            <font>
                               <Font size="18.0" />
                            </font>
                         </Label>
-                        <ChoiceBox fx:id="choiseEditTable" layoutX="29.0" layoutY="142.0" prefHeight="28.0" prefWidth="340.0" />
-                        <TextField fx:id="textEditTableDesc" layoutX="28.0" layoutY="85.0" prefHeight="30.0" prefWidth="342.0" />
-                        <Label layoutX="28.0" layoutY="58.0" prefHeight="25.0" prefWidth="335.0" text="Описание">
+                        <ChoiceBox fx:id="choiseEditTable" layoutX="29.0" layoutY="152.0" prefHeight="28.0" prefWidth="340.0" />
+                        <TextField fx:id="textEditTableDesc" layoutX="28.0" layoutY="95.0" prefHeight="30.0" prefWidth="342.0" />
+                        <Label layoutX="29.0" layoutY="68.0" prefHeight="25.0" prefWidth="335.0" text="Описание">
                            <font>
                               <Font size="18.0" />
                            </font>
@@ -350,7 +250,7 @@
                <header>
                   <AnchorPane prefHeight="47.0" prefWidth="458.0" style="-fx-background-color: #DCDCDC;">
                      <children>
-                        <Label layoutX="79.0" layoutY="10.0" text="Изменить запись в таблице">
+                        <Label layoutX="28.0" layoutY="10.0" text="Изменить запись в таблице">
                            <font>
                               <Font name="System Italic" size="18.0" />
                            </font>
